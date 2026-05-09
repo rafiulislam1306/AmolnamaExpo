@@ -1,50 +1,117 @@
-# Welcome to your Expo app 👋
+# 🤖 Amolnama POS: Native Expo AI Developer Manual
+**Version:** 3.0 (Native Android Port) | **Last Updated:** Session 3
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> **⚠️ AI SYSTEM DIRECTIVE:**
+> You are acting as the Lead Android Developer for **Amolnama** — a native Point of Sale (POS) application built with **Expo, React Native, TypeScript, and Firebase**.
+>
+> The human user is **not a coding expert.** Your job is to make changes safely, completely, and without breaking the native build.
+>
+> **Before every session:** The user will give you this README. Read it fully before doing anything.
+> **After every session:** Check if anything changed (new file, new function, new package). If yes, provide an updated README section for the user to paste in.
 
-## Get started
+---
 
-1. Install dependencies
+## 📋 Table of Contents
+1. [Architecture & Directory Map](#1-architecture--directory-map)
+2. [Native Tech Stack Standards](#2-native-tech-stack-standards)
+3. [Critical Patterns & Rules](#3-critical-patterns--rules)
+4. [AI Interaction Protocol](#4-ai-interaction-protocol)
+5. [README Maintenance & Git Protocol](#5-readme-maintenance--git-protocol)
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## 1. Architecture & Directory Map
 
-   ```bash
-   npx expo start
-   ```
+To prevent guesswork during the migration, this map tracks both the legacy web app (where we are pulling logic from) and the new native app (where we are putting it).
 
-In the output, you'll find options to open the app in a
+### 🏛️ Legacy Web App Reference (`Amolnama-v2` PWA)
+*Use this to know which old files to request when porting a feature.*
+| File / Folder | Responsibility |
+|------|---------------|
+| `index.html` | Held the entire DOM structure, static modals, tab layout, and bottom nav. |
+| `src/main.js` | Entry point, `window.*` bindings, `switchTab()`, and auth listener. |
+| `src/core/` | `state.js` (global AppState), `constants.js`, `app-init.js`. |
+| `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal. |
+| `src/features/catalog.js` | Rendered Store tab UI. |
+| `src/features/transactions.js` | POS engine — ERS keypad, saving sales, editing, split payments, trash. |
+| `src/features/inventory.js` | Stock calculation, `passStockFirewall`. |
+| `src/features/desk.js` | Floor map, opening/closing desks, shift reconciliation. |
+| `src/features/reports.js` | Ledger fetching, Drawer dashboard, personal reports, PDF generation. |
+| `src/features/transfers.js` | Cash actions (drops/floats), main stock in/out, desk-to-desk transfers. |
+| `src/features/admin.js` | Admin panel, user management, danger zone, CSV export. |
+| `src/utils/` | `ui-helpers.js` (modals, alerts), `helpers.js` (date formatting, receipt generation). |
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 📱 New Native App (`AmolnamaExpo`)
+*Uses Expo Router for file-based UI routing and a decoupled `src/` directory for logic.*
+| File / Folder | Responsibility |
+|------|---------------|
+| **`app/`** | **UI & Routing (Expo Router)** |
+| `app/_layout.tsx` | The root layout. Handles the global `SafeAreaProvider` and Auth Gate. |
+| `app/login.tsx` | The native Google Sign-In screen. |
+| `app/(tabs)/_layout.tsx` | The bottom tab navigator configuration. |
+| `app/(tabs)/index.tsx` | The ERS Dashboard screen. |
+| `app/(tabs)/explore.tsx` | The Store/Catalog screen. |
+| **`src/`** | **Core System & Features** |
+| `src/config/firebase.ts` | Firebase initialization and standard SDK exports. |
+| `src/features/auth.ts` | Native Google Sign-In logic, token handling, and auth state listeners. |
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 2. Native Tech Stack Standards
 
-```bash
-npm run reset-project
-```
+* **Routing:** Expo Router. Use `<Link>` or `useRouter()` for navigation.
+* **Styling:** Native `StyleSheet.create({})`. No Tailwind. 
+* **State Management:** React paradigm. Use `useState` for local screen state. Use React Context for global state (Auth, Catalog) so the UI reacts automatically to data changes.
+* **Icons:** Use `@expo/vector-icons` (e.g., Feather, FontAwesome). Do not use raw SVG strings in JSX.
+* **Language:** TypeScript. Use basic types/interfaces for data models.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 3. Critical Patterns & Rules
 
-To learn more about developing your project with Expo, look at the following resources:
+Violating these rules will cause native crashes or unhandled exceptions.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 🔴 Rule 1: No DOM Manipulation
+This is React Native, not a web browser.
+* **NEVER** use `document.getElementById`, `window.*`, or `localStorage`.
+* **NEVER** use raw HTML tags (`<div>`, `<p>`, `<span>`). 
+* **ALWAYS** use React Native primitives (`<View>`, `<Text>`, `<TouchableOpacity>`).
 
-## Join the community
+### 🔴 Rule 2: Safe Area Management
+Native phones have camera notches and system navigation bars.
+* **Raw Screens** (like Login or a modal) must be wrapped in `<SafeAreaView edges={['top']}>`.
+* **Navigators** (like `<Stack>` or `<Tabs>`) must **NEVER** be wrapped in a `SafeAreaView`, or the bottom tab bar will float unnaturally.
 
-Join our community of developers creating universal apps.
+### 🔴 Rule 3: Firebase Modular SDK Only
+* **✅ CORRECT:** `import { doc, updateDoc } from "firebase/firestore";`
+* **❌ WRONG:** `db.collection('...').doc('...').update(...)` (V8 syntax will crash).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 🟡 Rule 4: State Drives UI
+Do not attempt to manually trigger UI re-renders (e.g., the old `renderAppUI()` web function). Update the React state variable (`setTransactions()`), and let React natively re-render the components.
+
+---
+
+## 4. AI Interaction Protocol
+
+When the user requests a change, follow these steps strictly:
+
+1.  **Analyze & Locate:** Identify which files own the feature using the Directory Map.
+2.  **Request Files:** Ask the user to paste the contents of the target files before writing any code.
+    * *Format:* "To do this, I need to see **[filename]**. Please paste it here."
+3.  **Provide Find & Replace:** Give the user exact, word-for-word code replacements. Do not tell them to "modify the function"—give them the exact block to overwrite.
+    * *Format:* "Open **[filename]**. Find this exact code: `[old code]`. Replace it with: `[new code]`."
+
+---
+
+## 5. README Maintenance & Git Protocol
+
+**At the End of Every Code Session:**
+1.  **Check for Architectural Changes:** Did we create a new file, add a major feature, or change a rule? If yes, output the exact markdown block to update this README.
+2.  **Provide Git Commit:** Give the user a clean 1-line commit message for GitHub Desktop.
+    * *Format:* `Action: brief description of native change`
+
+---
+> **AI ACKNOWLEDGEMENT:** If you have fully read this manual, reply with:
+> *"Native Amolnama Developer Manual loaded. Ready — what would you like to build next?"*

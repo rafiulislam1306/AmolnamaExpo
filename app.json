@@ -3,6 +3,9 @@
     "name": "AmolnamaExpo",
     "slug": "AmolnamaExpo",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "amolnamaexpo",
@@ -12,6 +15,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.amolnama.pos",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,11 +43,18 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9fa10713-1701-4f8b-99de-2043125c5f3c"
+      }
     }
   }
 }

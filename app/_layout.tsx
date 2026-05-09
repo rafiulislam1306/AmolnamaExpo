@@ -1,24 +1,49 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { useEffect, useState } from 'react';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { initAuth } from '../src/features/auth';
+import LoginScreen from './login';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [isReady, setIsReady] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
+  useEffect(() => {
+    // Start listening to Firebase Auth state
+    initAuth(
+      (loggedInUser) => {
+        setUser(loggedInUser);
+        setIsReady(true);
+      },
+      () => {
+        setUser(null);
+        setIsReady(true);
+      }
+    );
+  }, []);
+
+  if (!isReady) return null; // Show blank screen during Firebase handshake
+
+  // If no user is found, strictly render the Login screen only
+  if (!user) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'left', 'right']}>
+          <LoginScreen />
+          <StatusBar style="dark" />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
+
+  // If user is found, render the Navigation Stack (Tabs)
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <StatusBar style="dark" />
+    </SafeAreaProvider>
   );
 }
