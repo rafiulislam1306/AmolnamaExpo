@@ -1,37 +1,43 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAppState } from '../../src/core/StateContext';
 
-// Ported from Amolnama-v2/src/core/constants.js
+// Fallback catalog if global state hasn't loaded yet
 const defaultCatalog = {
-    "sim_no1": { name: 'No. 1 Plan', display: 'No. 1 Plan', price: 497, cat: 'new-sim', trackAs: 'No. 1 Plan', isActive: true, order: 1 },
-    "sim_prime": { name: 'Prime', display: 'Prime', price: 400, cat: 'new-sim', trackAs: 'Prime', isActive: true, order: 2 },
-    "sim_djuice": { name: 'Djuice', display: 'Djuice', price: 400, cat: 'new-sim', trackAs: 'Djuice', isActive: true, order: 3 },
-    "sim_skitto": { name: 'Skitto', display: 'Skitto', price: 400, cat: 'new-sim', trackAs: 'Skitto Kit', isActive: true, order: 4 },
-    "sim_esim_pre": { name: 'eSIM Prepaid', display: 'eSIM Prepaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 5 },
-    "sim_esim_post": { name: 'eSIM Postpaid', display: 'eSIM Postpaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 6 },
-    "sim_power": { name: 'Power Prime', display: 'Power Prime', price: 1499, cat: 'new-sim', trackAs: 'Power Prime', isActive: true, order: 7 },
-    "sim_recycle": { name: 'Recycle SIM', display: 'Recycle SIM', price: 400, cat: 'new-sim', trackAs: 'Recycle SIM', isActive: true, order: 8 },
-    "sim_my": { name: 'My SIM', display: 'My SIM', price: 400, cat: 'new-sim', trackAs: 'Regular Kit', isActive: true, order: 9 },
-    "rep_regular": { name: 'Regular Replacement', display: 'Regular', price: 400, cat: 'paid-rep', trackAs: 'Regular Kit', isActive: true, order: 10 },
-    "rep_skitto": { name: 'Skitto Replacement', display: 'Skitto', price: 400, cat: 'paid-rep', trackAs: 'Skitto Kit', isActive: true, order: 11 },
-    "rep_esim": { name: 'eSIM Replacement', display: 'eSIM', price: 349, cat: 'paid-rep', trackAs: 'eSIM', isActive: true, order: 12 },
-    "rep_skitto_esim": { name: 'Skitto eSIM Replacement', display: 'Skitto eSIM', price: 349, cat: 'paid-rep', trackAs: 'Skitto eSIM', isActive: true, order: 13 },
-    "foc_regular": { name: 'FOC Regular', display: 'Regular', price: 0, cat: 'foc', trackAs: 'Regular Kit', isActive: true, order: 14 },
-    "foc_skitto": { name: 'FOC Skitto', display: 'Skitto', price: 0, cat: 'foc', trackAs: 'Skitto Kit', isActive: true, order: 15 },
-    "foc_esim": { name: 'FOC eSIM', display: 'eSIM', price: 0, cat: 'foc', trackAs: 'eSIM', isActive: true, order: 16 },
-    "foc_skitto_esim": { name: 'FOC Skitto eSIM', display: 'Skitto eSIM', price: 0, cat: 'foc', trackAs: 'Skitto eSIM', isActive: true, order: 17 },
-    "srv_recycle": { name: 'Recycle SIM Reissue', display: 'Recycle SIM Reissue', price: 115, cat: 'service', trackAs: '', isActive: true, order: 18 },
-    "srv_itemized": { name: 'Itemized Bill', display: 'Itemized Bill', price: 230, cat: 'service', trackAs: '', isActive: true, order: 19 },
-    "srv_owner": { name: 'Ownership Transfer', display: 'Ownership Transfer', price: 115, cat: 'service', trackAs: '', isActive: true, order: 20 },
-    "srv_mnp": { name: 'MNP', display: 'MNP', price: 457.50, cat: 'service', trackAs: '', isActive: true, order: 21 },
-    "foc_corp": { name: 'Corporate Replacement', display: 'Corporate Replacement', price: 0, cat: 'free-action', trackAs: '', isActive: true, order: 22 }
+  "sim_no1": { name: 'No. 1 Plan', display: 'No. 1 Plan', price: 497, cat: 'new-sim', trackAs: 'No. 1 Plan', isActive: true, order: 1 },
+  "sim_prime": { name: 'Prime', display: 'Prime', price: 400, cat: 'new-sim', trackAs: 'Prime', isActive: true, order: 2 },
+  "sim_djuice": { name: 'Djuice', display: 'Djuice', price: 400, cat: 'new-sim', trackAs: 'Djuice', isActive: true, order: 3 },
+  "sim_skitto": { name: 'Skitto', display: 'Skitto', price: 400, cat: 'new-sim', trackAs: 'Skitto Kit', isActive: true, order: 4 },
+  "sim_esim_pre": { name: 'eSIM Prepaid', display: 'eSIM Prepaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 5 },
+  "sim_esim_post": { name: 'eSIM Postpaid', display: 'eSIM Postpaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 6 },
+  "sim_power": { name: 'Power Prime', display: 'Power Prime', price: 1499, cat: 'new-sim', trackAs: 'Power Prime', isActive: true, order: 7 },
+  "sim_recycle": { name: 'Recycle SIM', display: 'Recycle SIM', price: 400, cat: 'new-sim', trackAs: 'Recycle SIM', isActive: true, order: 8 },
+  "sim_my": { name: 'My SIM', display: 'My SIM', price: 400, cat: 'new-sim', trackAs: 'Regular Kit', isActive: true, order: 9 },
+  "rep_regular": { name: 'Regular Replacement', display: 'Regular', price: 400, cat: 'paid-rep', trackAs: 'Regular Kit', isActive: true, order: 10 },
+  "rep_skitto": { name: 'Skitto Replacement', display: 'Skitto', price: 400, cat: 'paid-rep', trackAs: 'Skitto Kit', isActive: true, order: 11 },
+  "rep_esim": { name: 'eSIM Replacement', display: 'eSIM', price: 349, cat: 'paid-rep', trackAs: 'eSIM', isActive: true, order: 12 },
+  "rep_skitto_esim": { name: 'Skitto eSIM Replacement', display: 'Skitto eSIM', price: 349, cat: 'paid-rep', trackAs: 'Skitto eSIM', isActive: true, order: 13 },
+  "foc_regular": { name: 'FOC Regular', display: 'Regular', price: 0, cat: 'foc', trackAs: 'Regular Kit', isActive: true, order: 14 },
+  "foc_skitto": { name: 'FOC Skitto', display: 'Skitto', price: 0, cat: 'foc', trackAs: 'Skitto Kit', isActive: true, order: 15 },
+  "foc_esim": { name: 'FOC eSIM', display: 'eSIM', price: 0, cat: 'foc', trackAs: 'eSIM', isActive: true, order: 16 },
+  "foc_skitto_esim": { name: 'FOC Skitto eSIM', display: 'Skitto eSIM', price: 0, cat: 'foc', trackAs: 'Skitto eSIM', isActive: true, order: 17 },
+  "srv_recycle": { name: 'Recycle SIM Reissue', display: 'Recycle SIM Reissue', price: 115, cat: 'service', trackAs: '', isActive: true, order: 18 },
+  "srv_itemized": { name: 'Itemized Bill', display: 'Itemized Bill', price: 230, cat: 'service', trackAs: '', isActive: true, order: 19 },
+  "srv_owner": { name: 'Ownership Transfer', display: 'Ownership Transfer', price: 115, cat: 'service', trackAs: '', isActive: true, order: 20 },
+  "srv_mnp": { name: 'MNP', display: 'MNP', price: 457.50, cat: 'service', trackAs: '', isActive: true, order: 21 },
+  "foc_corp": { name: 'Corporate Replacement', display: 'Corporate Replacement', price: 0, cat: 'free-action', trackAs: '', isActive: true, order: 22 }
 };
 
 export default function StoreScreen() {
-  const [paymentMode, setPaymentMode] = useState('Cash');
+  const appState = useAppState();
   const [activeCategory, setActiveCategory] = useState('new-sim');
+
+  // Use global catalog if available, otherwise fallback
+  const catalogSource = appState.globalCatalog && Object.keys(appState.globalCatalog).length > 0 
+    ? appState.globalCatalog 
+    : defaultCatalog;
 
   const categories = [
     { id: 'new-sim', label: 'New SIMs' },
@@ -40,7 +46,6 @@ export default function StoreScreen() {
     { id: 'foc', label: 'Free Actions' },
   ];
 
-  // Helper to get native icons based on legacy catalog logic
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
       case 'new-sim': return <Feather name="simcard" size={20} color="#0ea5e9" />;
@@ -53,21 +58,21 @@ export default function StoreScreen() {
   };
 
   const handleItemPress = (item: any) => {
+    // TODO: Link to transactions.ts instantSaveItem
     Alert.alert('Save Transaction', `Save 1x ${item.display || item.name} for ${item.price} Tk?`);
   };
 
   const handleItemLongPress = (item: any) => {
+    // TODO: Link to transactions.ts selectItem
     Alert.alert('Quantity Mode', `Open quantity selector for ${item.name}`);
   };
 
-  // Filter and sort items based on legacy catalog.js logic
-  const filteredItems = Object.values(defaultCatalog)
-    .filter(item => {
-        // Special case: map 'free-action' category to the 'foc' pill for UI consolidation
+  const filteredItems = Object.values(catalogSource)
+    .filter((item: any) => {
         const uiCategory = item.cat === 'free-action' ? 'foc' : item.cat;
         return item.isActive !== false && uiCategory === activeCategory;
     })
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
+    .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -79,14 +84,14 @@ export default function StoreScreen() {
             <Text style={styles.toggleLabel}>Payment Mode</Text>
             <View style={styles.toggleSwitch}>
               <TouchableOpacity 
-                style={[styles.toggleOption, paymentMode === 'Cash' && styles.toggleOptionActive]}
-                onPress={() => setPaymentMode('Cash')}>
-                <Text style={[styles.toggleText, paymentMode === 'Cash' && styles.toggleTextActive]}>Cash</Text>
+                style={[styles.toggleOption, !appState.isMfs && styles.toggleOptionActive]}
+                onPress={() => appState.updateAppState({ isMfs: false })}>
+                <Text style={[styles.toggleText, !appState.isMfs && styles.toggleTextActive]}>Cash</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                style={[styles.toggleOption, paymentMode === 'MFS' && styles.toggleOptionActive]}
-                onPress={() => setPaymentMode('MFS')}>
-                <Text style={[styles.toggleText, paymentMode === 'MFS' && styles.toggleTextActive]}>MFS</Text>
+                style={[styles.toggleOption, appState.isMfs && styles.toggleOptionActive]}
+                onPress={() => appState.updateAppState({ isMfs: true })}>
+                <Text style={[styles.toggleText, appState.isMfs && styles.toggleTextActive]}>MFS</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -108,7 +113,7 @@ export default function StoreScreen() {
         {/* Dynamic Product List */}
         <ScrollView style={styles.listContainer}>
           {filteredItems.length > 0 ? (
-            filteredItems.map((item, index) => (
+            filteredItems.map((item: any, index) => (
               <TouchableOpacity 
                 key={index} 
                 style={styles.itemRow}
@@ -142,6 +147,7 @@ export default function StoreScreen() {
               <Text style={styles.emptyStateText}>No items found in this category.</Text>
             </View>
           )}
+          <View style={{ height: 100 }} /> 
         </ScrollView>
 
       </View>
@@ -152,22 +158,8 @@ export default function StoreScreen() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#f8fafc' },
   container: { flex: 1 },
-  headerControls: {
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-    paddingTop: 16,
-    paddingBottom: 4,
-    paddingHorizontal: 16,
-    elevation: 2,
-    zIndex: 50,
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
+  headerControls: { backgroundColor: '#ffffff', borderBottomWidth: 1, borderBottomColor: '#e2e8f0', paddingTop: 16, paddingBottom: 4, paddingHorizontal: 16, elevation: 2, zIndex: 50 },
+  toggleContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   toggleLabel: { fontWeight: '700', color: '#64748b', fontSize: 16 },
   toggleSwitch: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 20, padding: 4 },
   toggleOption: { paddingVertical: 6, paddingHorizontal: 16, borderRadius: 16 },
@@ -180,44 +172,15 @@ const styles = StyleSheet.create({
   storePillActive: { backgroundColor: '#0f172a' },
   pillText: { fontWeight: '600', color: '#64748b' },
   pillTextActive: { color: '#ffffff' },
-  listContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    margin: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
-  },
+  listContainer: { flex: 1, backgroundColor: '#ffffff', margin: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
   itemLeft: { flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1 },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#f8fafc',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  iconContainer: { width: 40, height: 40, backgroundColor: '#f8fafc', borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   itemName: { fontWeight: '600', color: '#0f172a', fontSize: 16 },
   itemSubtext: { fontSize: 12, color: '#94a3b8' },
   itemRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   itemPrice: { fontSize: 14, fontWeight: '700', color: '#64748b' },
-  plusCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  plusCircle: { width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center' },
   emptyState: { padding: 32, alignItems: 'center' },
   emptyStateText: { color: '#94a3b8', fontStyle: 'italic' },
 });

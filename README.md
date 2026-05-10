@@ -142,3 +142,8 @@ When the user requests a change, follow these steps strictly:
 ### Session 9: Inventory & Stock Firewall
 * **Native Implementation:** Ported `inventory.js` to `inventory.ts`. Refactored functions to accept `appState` natively instead of relying on a global DOM singleton. Dropped legacy DOM UI logic.
 * **Integration:** Replaced dummy item lists in `drawer.tsx` with dynamic `getPhysicalItems` calls. Activated `passStockFirewall` to prevent agents from sending or returning stock they do not possess.
+
+### Session 10: Store / Catalog Port
+* **Native Implementation:** Integrated existing `explore.tsx` layout with `useAppState` Context. 
+* **Standard Enforced:** Removed legacy `catalog.js` DOM generation and `pointerdown` hack timers. Switched to native `<TouchableOpacity>` using `onPress` and `onLongPress` props.
+* **State Sync:** Synced the Cash/MFS toggle with global `appState.isMfs` variable.
