@@ -13,10 +13,10 @@
 
 ## 🔴 Current Status
 
-- **Last completed session:** 16
-- **Last feature built:** Native Profile Hub with Sign Out and Desk Release logic
-- **Next to build:** Unknown — confirm with user
-- **Known bugs / open TODOs:** Sync Section 1 Architecture Map with recent ports
+- **Last completed session:** 17
+- **Last feature built:** Native Reporting Dashboard & Summary Cards in Drawer
+- **Next to build:** Admin Panel (from legacy `admin.js`)
+- **Known bugs / open TODOs:** Drawer is missing summary totals (Cash/MFS) and Export/Admin features from legacy `reports.js`
 - **Packages added last session:** None
 
 ---

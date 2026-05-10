@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { ActivityIndicator, Alert, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
@@ -52,6 +52,57 @@ export default function DrawerScreen() {
   const [editPayment, setEditPayment] = useState('Cash');
   const [editCashAmt, setEditCashAmt] = useState('');
   const [editMfsAmt, setEditMfsAmt] = useState('');
+
+  // --- Native Reporting Engine (Ported from legacy reports.js) ---
+  const reportTotals = useMemo(() => {
+    let cashSales = 0;
+    let mfsSales = 0;
+    let ersTotal = 0;
+    let adjustments = 0;
+
+    transactions.forEach(tx => {
+      const safeCashAmt = tx.cashAmt || 0;
+      const safeMfsAmt = tx.mfsAmt || 0;
+
+      if (tx.type === 'adjustment') {
+        adjustments += safeCashAmt;
+      } else if (tx.type !== 'transfer_out' && tx.type !== 'transfer_in') {
+        cashSales += safeCashAmt;
+        mfsSales += safeMfsAmt;
+        if (tx.name === 'ERS Flexiload') {
+          ersTotal += tx.amount;
+        }
+      }
+    });
+
+    const openingCash = appState.currentOpeningCash || 0;
+    const expectedCash = openingCash + cashSales + adjustments;
+
+    return { cashSales, mfsSales, ersTotal, expectedCash, openingCash };
+  }, [transactions, appState.currentOpeningCash]);
+
+  const handleShareReport = async () => {
+    const reportText = `
+=== AMOLNAMA DESK REPORT ===
+Date: ${getStrictDate()}
+Desk: ${appState.currentDeskName || 'Active Desk'}
+--------------------------
+Opening Cash: ${reportTotals.openingCash} Tk
+(+) Cash Sales: ${reportTotals.cashSales} Tk
+(+/-) Adjustments: ${reportTotals.expectedCash - reportTotals.openingCash - reportTotals.cashSales} Tk
+--------------------------
+EXPECTED CASH: ${reportTotals.expectedCash} Tk
+
+Total MFS: ${reportTotals.mfsSales} Tk
+Total ERS: ${reportTotals.ersTotal} Tk
+    `.trim();
+
+    try {
+      await Share.share({ message: reportText });
+    } catch (error) {
+      Alert.alert("Error", "Could not open share menu.");
+    }
+  };
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -223,6 +274,33 @@ export default function DrawerScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Financial Summary</Text>
+          <TouchableOpacity onPress={handleShareReport}>
+            <Feather name="share-2" size={20} color="#0ea5e9" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Ported Summary Dashboard */}
+        <View style={styles.dashboardGrid}>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>Expected Cash</Text>
+            <Text style={styles.statValue}>{reportTotals.expectedCash} Tk</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>Total MFS</Text>
+            <Text style={[styles.statValue, { color: '#10b981' }]}>{reportTotals.mfsSales} Tk</Text>
+          </View>
+          <View style={styles.statCardSmall}>
+            <Text style={styles.statLabel}>Cash Sales</Text>
+            <Text style={styles.statValueSmall}>+{reportTotals.cashSales} Tk</Text>
+          </View>
+          <View style={styles.statCardSmall}>
+            <Text style={styles.statLabel}>ERS Sent</Text>
+            <Text style={[styles.statValueSmall, { color: '#f59e0b' }]}>{reportTotals.ersTotal} Tk</Text>
+          </View>
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Desk Actions</Text>
         </View>
@@ -493,3 +571,11 @@ const styles = StyleSheet.create({
   modalSaveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#0ea5e9', alignItems: 'center' },
   modalSaveText: { color: '#ffffff', fontWeight: '700', fontSize: 16 }
 });
+
+header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, marginTop: 8 },
+  dashboardGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
+  statCard: { width: '48.5%', backgroundColor: '#ffffff', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' },
+  statCardSmall: { width: '48.5%', backgroundColor: '#f8fafc', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0' },
+  statLabel: { fontSize: 11, fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: 4 },
+  statValue: { fontSize: 20, fontWeight: '800', color: '#0f172a' },
+  statValueSmall: { fontSize: 16, fontWeight: '700', color: '#475569' },
