@@ -157,3 +157,8 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Embedded a native Quantity Modal keypad into `explore.tsx`. 
 * **Integration:** Connected `handleItemPress` (Instant Save) and `handleSaveQuantity` to the global `addTransactionToCloud` engine. 
 * **Firewall Enforced:** Store items are now verified by `passStockFirewall` before saving.
+
+### Session 13: Floor Map & Desk Engine
+* **Native Implementation:** Extracted `handleDeskSelect` and `submitClosingReport` into a standalone TypeScript engine (`desk.ts`). 
+* **UI Ported:** Built the Floor Tab (`floor.tsx`) using native UI components. Automatically handles default desk seeding if the Firestore collection is empty.
+* **Navigation:** Added `expo-router` logic to automatically push the user to the Drawer tab immediately after joining a desk. Wired up the native Close Desk confirmation alert.

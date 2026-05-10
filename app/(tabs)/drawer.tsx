@@ -4,6 +4,7 @@ import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInpu
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
+import { submitClosingReport } from '../../src/features/desk';
 import { getPhysicalItems, passStockFirewall } from '../../src/features/inventory';
 import { generateReceiptNo, getStrictDate } from '../../src/utils/helpers';
 
@@ -227,6 +228,23 @@ export default function DrawerScreen() {
             <Text style={styles.actionText}>− Return Stock</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity 
+          style={[styles.closeBtn, !appState.currentDeskId && { opacity: 0.5 }]} 
+          disabled={!appState.currentDeskId}
+          onPress={() => {
+            Alert.alert(
+              "Close Shift", 
+              "This will permanently seal your shift and record the cash drop. Proceed?",
+              [
+                { text: "Cancel", style: "cancel" },
+                { text: "Confirm", style: "destructive", onPress: () => submitClosingReport(appState, auth) }
+              ]
+            );
+          }}
+        >
+          <Text style={styles.closeBtnText}>Close Desk</Text>
+        </TouchableOpacity>
 
         <View style={styles.ledgerHeader}>
           <Text style={styles.ledgerTitle}>DESK LEDGER</Text>
