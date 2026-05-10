@@ -1,0 +1,70 @@
+AmolnamaExpo/
+├── .vscode
+│   ├── extensions.json
+│   └── settings.json
+├── app
+│   ├── (tabs)
+│   │   ├── _layout.tsx
+│   │   ├── drawer.tsx
+│   │   ├── explore.tsx
+│   │   ├── floor.tsx
+│   │   ├── index.tsx
+│   │   └── report.tsx
+│   ├── _layout.tsx
+│   ├── login.tsx
+│   └── modal.tsx
+├── assets
+│   └── images
+│       ├── android-icon-background.png
+│       ├── android-icon-foreground.png
+│       ├── android-icon-monochrome.png
+│       ├── favicon.png
+│       ├── icon.png
+│       ├── partial-react-logo.png
+│       ├── react-logo.png
+│       ├── react-logo@2x.png
+│       ├── react-logo@3x.png
+│       └── splash-icon.png
+├── components
+│   ├── ui
+│   │   ├── collapsible.tsx
+│   │   ├── icon-symbol.ios.tsx
+│   │   └── icon-symbol.tsx
+│   ├── external-link.tsx
+│   ├── haptic-tab.tsx
+│   ├── hello-wave.tsx
+│   ├── parallax-scroll-view.tsx
+│   ├── themed-text.tsx
+│   └── themed-view.tsx
+├── constants
+│   └── theme.ts
+├── hooks
+│   ├── use-color-scheme.ts
+│   ├── use-color-scheme.web.ts
+│   └── use-theme-color.ts
+├── scripts
+│   └── reset-project.js
+├── src
+│   ├── config
+│   │   └── firebase.ts
+│   ├── core
+│   │   ├── state.ts
+│   │   └── StateContext.tsx
+│   ├── features
+│   │   ├── auth.ts
+│   │   ├── desk.ts
+│   │   ├── inventory.ts
+│   │   └── transactions.ts
+│   └── utils
+│       └── helpers.ts
+├── .gitignore
+├── app.json
+├── eas.json
+├── eslint.config.js
+├── expo-env.d.ts
+├── google-services.json
+├── package-lock.json
+├── package.json
+├── README.md
+├── tree.js
+└── tsconfig.json
