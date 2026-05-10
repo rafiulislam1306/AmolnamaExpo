@@ -1,14 +1,14 @@
 import { Feather } from '@expo/vector-icons';
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
+import { exportLedgerCSV, forceCloseAllDesks } from '../../src/features/admin';
 import { submitClosingReport } from '../../src/features/desk';
 import { getPhysicalItems, passStockFirewall } from '../../src/features/inventory';
 import { deleteTransaction, saveTxEdit } from '../../src/features/transactions';
-import { exportLedgerCSV, forceCloseAllDesks } from '../../src/features/admin';
 import { generateReceiptNo, getStrictDate } from '../../src/utils/helpers';
 
 const CASH_ACTIONS = [
@@ -300,6 +300,8 @@ Total ERS: ${reportTotals.ersTotal} Tk
             <Text style={styles.statLabel}>ERS Sent</Text>
             <Text style={[styles.statValueSmall, { color: '#f59e0b' }]}>{reportTotals.ersTotal} Tk</Text>
           </View>
+        </View>
+
         {/* Admin Danger Zone - Visible only to Admins/Managers */}
         {(appState.currentUserRole === 'admin' || appState.currentUserRole === 'manager') && (
           <View style={styles.adminSection}>
@@ -318,6 +320,8 @@ Total ERS: ${reportTotals.ersTotal} Tk
             </View>
           </View>
         )}
+
+        <View style={styles.header}>
           <Text style={styles.headerTitle}>Desk Actions</Text>
         </View>
 
@@ -546,7 +550,7 @@ Total ERS: ${reportTotals.ersTotal} Tk
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#f8fafc' },
   container: { flex: 1, padding: 16 },
-  header: { marginBottom: 24, marginTop: 8 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, marginTop: 8 },
   headerTitle: { fontSize: 18, fontWeight: '800', color: '#64748b', textTransform: 'uppercase' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
   actionCard: { width: '48%', backgroundColor: '#ffffff', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0', gap: 12 },
@@ -585,16 +589,15 @@ const styles = StyleSheet.create({
   modalCancelBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#f1f5f9', alignItems: 'center' },
   modalCancelText: { color: '#64748b', fontWeight: '700', fontSize: 16 },
   modalSaveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#0ea5e9', alignItems: 'center' },
-  modalSaveText: { color: '#ffffff', fontWeight: '700', fontSize: 16 }
-});
-
-header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, marginTop: 8 },
+  modalSaveText: { color: '#ffffff', fontWeight: '700', fontSize: 16 },
+  // New Styles
   dashboardGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
   statCard: { width: '48.5%', backgroundColor: '#ffffff', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' },
   statCardSmall: { width: '48.5%', backgroundColor: '#f8fafc', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0' },
   statLabel: { fontSize: 11, fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: 4 },
   statValue: { fontSize: 20, fontWeight: '800', color: '#0f172a' },
   statValueSmall: { fontSize: 16, fontWeight: '700', color: '#475569' },
-  adminSection: { marginTop: 10, padding: 12, backgroundColor: '#fff1f2', borderRadius: 20, marginBottom: 24, borderSize: 1, borderColor: '#fecaca' },
+  adminSection: { marginTop: 10, padding: 12, backgroundColor: '#fff1f2', borderRadius: 20, marginBottom: 24, borderWidth: 1, borderColor: '#fecaca' },
   adminCard: { flex: 1, backgroundColor: '#ffffff', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', alignItems: 'center', gap: 6, flexDirection: 'row', justifyContent: 'center' },
-  adminCardText: { fontSize: 13, fontWeight: '700', color: '#475569' },
+  adminCardText: { fontSize: 13, fontWeight: '700', color: '#475569' }
+});
