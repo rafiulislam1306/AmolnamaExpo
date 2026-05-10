@@ -13,10 +13,10 @@
 
 ## 🔴 Current Status
 
-- **Last completed session:** 14
-- **Last feature built:** Native Edit & Trash Modals wired into `drawer.tsx` ledger cards
+- **Last completed session:** 16
+- **Last feature built:** Native Profile Hub with Sign Out and Desk Release logic
 - **Next to build:** Unknown — confirm with user
-- **Known bugs / open TODOs:** None recorded — confirm with user
+- **Known bugs / open TODOs:** Sync Section 1 Architecture Map with recent ports
 - **Packages added last session:** None
 
 ---
@@ -52,12 +52,12 @@ Tracks both the legacy web app (source of logic) and the new native app (destina
 | `src/core/state.js` | Global AppState object — all shared variables | ✅ Ported → `src/context/StateContext.tsx` |
 | `src/core/constants.js` | Fixed app-wide constants | ⏳ Not yet ported |
 | `src/core/app-init.js` | App bootstrap logic, initial data loading | ⏳ Not yet ported |
-| `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal | ✅ Ported → `src/features/auth.ts` |
+| `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal | ✅ Ported → `src/features/auth.ts` & `app/(tabs)/index.tsx` |
 | `src/features/catalog.js` | Store tab UI, item rendering | ✅ Ported → `app/(tabs)/explore.tsx` |
 | `src/features/transactions.js` | POS engine — ERS keypad, saving sales, editing, split payments, trash | 🔄 Partially ported → `src/features/transactions.ts` |
 | `src/features/inventory.js` | Stock calculation, `passStockFirewall` | ✅ Ported → `src/utils/inventory.ts` |
 | `src/features/desk.js` | Floor map, opening/closing desks, shift reconciliation | 🔄 Partially ported → `src/features/desk.ts` |
-| `src/features/reports.js` | Ledger fetching, Drawer dashboard, personal reports, PDF generation | ⏳ Not yet ported |
+| `src/features/reports.js` | Ledger fetching, Drawer dashboard, personal reports, PDF generation | ✅ Ported → `app/(tabs)/report.tsx` |
 | `src/features/transfers.js` | Cash actions (drops/floats), main stock in/out, desk-to-desk transfers | ✅ Ported → `app/(tabs)/drawer.tsx` |
 | `src/features/admin.js` | Admin panel, user management, danger zone, CSV export | ⏳ Not yet ported |
 | `src/utils/helpers.js` | Date formatting, receipt generation | ✅ Ported → `src/utils/helpers.ts` |
