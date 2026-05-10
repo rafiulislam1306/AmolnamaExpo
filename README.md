@@ -426,6 +426,11 @@ When the user requests a change, follow these steps strictly:
 * **Feature Ported:** Implemented the "Personal" vs "Center" report toggle with automatic role-based defaults.
 * **Export Strategy:** Integrated the native Android `Share` API for text-based reports, replacing legacy web-only PDF/Image libraries.
 
+### Session 16: Native Profile Hub
+* **Native Implementation:** Integrated a high-performance `<Modal>` Profile Hub into `index.tsx`.
+* **Standard Enforced:** Rule 1 & 4. Removed placeholder Alerts. Replicated legacy role-badge logic and color mapping natively.
+* **Feature Ported:** Implemented native Sign Out and Desk Release (Switch Desk) logic, including Firestore user document updates.
+
 ---
 
 > **AI ACKNOWLEDGEMENT:** If you have fully read this manual, reply with:
