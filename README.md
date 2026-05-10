@@ -147,3 +147,8 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Integrated existing `explore.tsx` layout with `useAppState` Context. 
 * **Standard Enforced:** Removed legacy `catalog.js` DOM generation and `pointerdown` hack timers. Switched to native `<TouchableOpacity>` using `onPress` and `onLongPress` props.
 * **State Sync:** Synced the Cash/MFS toggle with global `appState.isMfs` variable.
+
+### Session 11: ERS Keypad & Transaction Engine
+* **Native Implementation:** Extracted `addTransactionToCloud` into a standalone native utility (`transactions.ts`).
+* **State Integration:** Wired the ERS keypad in `index.tsx` to `useAppState` to grab live user data (Photo, Name) and correctly save ERS sales to Firestore.
+* **Standard Enforced:** Handled local ERS mathematical constraints (5 digit max) natively within React state instead of DOM parsing.
