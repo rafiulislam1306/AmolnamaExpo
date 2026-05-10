@@ -14,9 +14,9 @@
 ## 🔴 Current Status
 
 - **Last completed session:** 18
-- **Last feature built:** Native Admin Logic & CSV Export sharing.
-- **Next to build:** Admin Panel (from legacy `admin.js`)
-- **Known bugs / open TODOs:** Drawer is missing summary totals (Cash/MFS) and Export/Admin features from legacy `reports.js`
+- **Last feature built:** Native Admin Tools & CSV Export
+- **Next to build:** Catalog Editor (Master Price/Item list)
+- **Known bugs / open TODOs:** Resolve 'ExpoSharing' native module link (Currently Rebuilding)
 - **Packages added last session:** expo-file-system, expo-sharing.
 
 ---
@@ -311,6 +311,8 @@ Before writing any native port code for a feature:
 | `expo-auth-session` | Google OAuth token handling |
 | `expo-web-browser` | Required by `expo-auth-session` for OAuth flow |
 | `react-native-safe-area-context` | `SafeAreaView` and `SafeAreaProvider` |
+| `expo-file-system` | Native file reading/writing for CSVs |
+| `expo-sharing` | Native sharing sheet for reports/CSVs |
 
 > ⚠️ If you install a new package during a session, add it here before closing.
 
