@@ -152,3 +152,8 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Extracted `addTransactionToCloud` into a standalone native utility (`transactions.ts`).
 * **State Integration:** Wired the ERS keypad in `index.tsx` to `useAppState` to grab live user data (Photo, Name) and correctly save ERS sales to Firestore.
 * **Standard Enforced:** Handled local ERS mathematical constraints (5 digit max) natively within React state instead of DOM parsing.
+
+### Session 12: Complete Store Transaction Flow
+* **Native Implementation:** Embedded a native Quantity Modal keypad into `explore.tsx`. 
+* **Integration:** Connected `handleItemPress` (Instant Save) and `handleSaveQuantity` to the global `addTransactionToCloud` engine. 
+* **Firewall Enforced:** Store items are now verified by `passStockFirewall` before saving.

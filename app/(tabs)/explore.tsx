@@ -1,8 +1,10 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState } from '../../src/core/StateContext';
+import { passStockFirewall } from '../../src/features/inventory';
+import { addTransactionToCloud } from '../../src/features/transactions';
 
 // Fallback catalog if global state hasn't loaded yet
 const defaultCatalog = {
@@ -34,7 +36,11 @@ export default function StoreScreen() {
   const appState = useAppState();
   const [activeCategory, setActiveCategory] = useState('new-sim');
 
-  // Use global catalog if available, otherwise fallback
+  // Quantity Modal State
+  const [isQtyModalVisible, setQtyModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [qtyValue, setQtyValue] = useState('1');
+
   const catalogSource = appState.globalCatalog && Object.keys(appState.globalCatalog).length > 0 
     ? appState.globalCatalog 
     : defaultCatalog;
@@ -57,14 +63,46 @@ export default function StoreScreen() {
     }
   };
 
-  const handleItemPress = (item: any) => {
-    // TODO: Link to transactions.ts instantSaveItem
-    Alert.alert('Save Transaction', `Save 1x ${item.display || item.name} for ${item.price} Tk?`);
+  // --- Transaction Handlers ---
+  const handleItemPress = async (item: any) => {
+    if (!passStockFirewall(item.name, 1, appState)) return;
+    const paymentMethod = (item.price > 0 && appState.isMfs) ? "MFS" : "Cash";
+    await addTransactionToCloud('Item', item.name, item.price, 1, paymentMethod, appState);
   };
 
   const handleItemLongPress = (item: any) => {
-    // TODO: Link to transactions.ts selectItem
-    Alert.alert('Quantity Mode', `Open quantity selector for ${item.name}`);
+    setSelectedItem(item);
+    setQtyValue('1');
+    setQtyModalVisible(true);
+  };
+
+  const handleQtyKeyPress = (val: string) => {
+    setQtyValue((prev) => {
+      if (prev === '0') return val;
+      if ((prev + val).length > 3) return prev; // Max 3 digits like web app
+      return prev + val;
+    });
+  };
+
+  const handleQtyBackspace = () => {
+    setQtyValue((prev) => (prev.length > 1 ? prev.slice(0, -1) : '0'));
+  };
+
+  const handleSaveQuantity = async () => {
+    const qtyInt = parseInt(qtyValue) || 0;
+    if (qtyInt <= 0) return Alert.alert("Invalid Input", "Quantity must be 1 or more.");
+    if (!selectedItem) return;
+
+    if (!passStockFirewall(selectedItem.name, qtyInt, appState)) return;
+
+    const totalPrice = qtyInt * selectedItem.price;
+    const paymentMethod = (selectedItem.price > 0 && appState.isMfs) ? "MFS" : "Cash";
+
+    const success = await addTransactionToCloud('Item', selectedItem.name, totalPrice, qtyInt, paymentMethod, appState);
+    if (success) {
+      setQtyModalVisible(false);
+      setSelectedItem(null);
+    }
   };
 
   const filteredItems = Object.values(catalogSource)
@@ -119,7 +157,7 @@ export default function StoreScreen() {
                 style={styles.itemRow}
                 onPress={() => handleItemPress(item)}
                 onLongPress={() => handleItemLongPress(item)}
-                delayLongPress={500}
+                delayLongPress={400}
               >
                 <View style={styles.itemLeft}>
                   <View style={styles.iconContainer}>
@@ -149,8 +187,50 @@ export default function StoreScreen() {
           )}
           <View style={{ height: 100 }} /> 
         </ScrollView>
-
       </View>
+
+      {/* Quantity Modal */}
+      <Modal animationType="slide" transparent={true} visible={isQtyModalVisible} onRequestClose={() => setQtyModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{selectedItem?.display || selectedItem?.name}</Text>
+            
+            <View style={styles.qtyDisplayBox}>
+              <Text style={styles.qtyDisplayText}>{qtyValue}</Text>
+            </View>
+            
+            <Text style={styles.calcText}>
+              {selectedItem?.price === 0 
+                ? 'Inventory Update (0 Tk)' 
+                : `${qtyValue || 0} x ${selectedItem?.price || 0} = ${(parseInt(qtyValue) || 0) * (selectedItem?.price || 0)} Tk`
+              }
+            </Text>
+
+            <View style={styles.keypad}>
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((key) => (
+                <TouchableOpacity key={key} style={styles.keypadBtn} onPress={() => handleQtyKeyPress(key)}>
+                  <Text style={styles.keypadBtnText}>{key}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity style={styles.keypadBtn} onPress={() => setQtyModalVisible(false)}>
+                <Text style={styles.keypadBtnText}>✕</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.keypadBtn} onPress={() => handleQtyKeyPress('0')}>
+                <Text style={styles.keypadBtnText}>0</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.keypadBtn, { backgroundColor: '#fef2f2', borderColor: '#fee2e2' }]} onPress={handleQtyBackspace}>
+                <Text style={[styles.keypadBtnText, { color: '#ef4444' }]}>⌫</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.saveBtn} onPress={handleSaveQuantity}>
+              <Text style={styles.saveBtnText}>Save Quantity</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -183,4 +263,17 @@ const styles = StyleSheet.create({
   plusCircle: { width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center' },
   emptyState: { padding: 32, alignItems: 'center' },
   emptyStateText: { color: '#94a3b8', fontStyle: 'italic' },
+  
+  // Modal Styles
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.6)', justifyContent: 'flex-end', paddingBottom: 20, paddingHorizontal: 16 },
+  modalContent: { backgroundColor: '#ffffff', width: '100%', borderRadius: 24, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 10 },
+  modalTitle: { fontSize: 20, fontWeight: '800', color: '#0f172a', textAlign: 'center', marginBottom: 16 },
+  qtyDisplayBox: { backgroundColor: '#f1f5f9', paddingVertical: 16, borderRadius: 16, alignItems: 'center', marginBottom: 8 },
+  qtyDisplayText: { fontSize: 40, fontWeight: '800', color: '#0f172a' },
+  calcText: { textAlign: 'center', fontSize: 14, color: '#64748b', fontWeight: '600', marginBottom: 24 },
+  keypad: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
+  keypadBtn: { width: '31%', backgroundColor: '#ffffff', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
+  keypadBtnText: { fontSize: 22, fontWeight: '700', color: '#334155' },
+  saveBtn: { backgroundColor: '#0ea5e9', padding: 18, borderRadius: 16, alignItems: 'center' },
+  saveBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 18 }
 });
