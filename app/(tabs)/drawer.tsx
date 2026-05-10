@@ -4,6 +4,7 @@ import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInpu
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
+import { generateReceiptNo, getStrictDate } from '../../src/utils/helpers';
 
 // Temporary Constants until helpers/inventory are ported
 const PHYSICAL_ITEMS = ['SIM Card', 'Router', 'Device']; 
@@ -69,9 +70,9 @@ export default function DrawerScreen() {
     const now = new Date();
     return {
       id: Date.now(),
-      receiptNo: 'TX-' + Math.floor(Math.random() * 1000000),
+      receiptNo: generateReceiptNo(),
       time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-      dateStr: now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'),
+      dateStr: getStrictDate(),
       deskId: appState.currentDeskId || 'unknown',
       sessionId: appState.currentSessionId || 'unknown',
       agentId: auth.currentUser?.uid || 'unknown',

@@ -134,3 +134,7 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Embedded native `<Modal>` components for Main Stock, Return Stock, and Desk Transfer actions.
 * **Standard Enforced:** Replaced legacy web `<select>` tags with horizontal `<ScrollView>` pill buttons for 100% native UI componentry.
 * **Logic Ported:** Translated complex double-write Firebase transactions (Send/Pull transfers) directly into native handlers. Added `createBaseTx()` utility to maintain data consistency.
+
+### Session 8: Native Utilities Port
+* **Native Implementation:** Ported `helpers.js` to strictly-typed `helpers.ts`. 
+* **Integration:** Wired `generateReceiptNo` and `getStrictDate` into `drawer.tsx`, fixing a temporary timestamp bug and restoring legacy parity for official transaction receipts.
