@@ -13,11 +13,11 @@
 
 ## 🔴 Current Status
 
-- **Last completed session:** 17
-- **Last feature built:** Native Reporting Dashboard & Summary Cards in Drawer
+- **Last completed session:** 18
+- **Last feature built:** Native Admin Logic & CSV Export sharing.
 - **Next to build:** Admin Panel (from legacy `admin.js`)
 - **Known bugs / open TODOs:** Drawer is missing summary totals (Cash/MFS) and Export/Admin features from legacy `reports.js`
-- **Packages added last session:** None
+- **Packages added last session:** expo-file-system, expo-sharing.
 
 ---
 

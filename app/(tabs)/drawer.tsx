@@ -8,6 +8,7 @@ import { useAppState } from '../../src/core/StateContext';
 import { submitClosingReport } from '../../src/features/desk';
 import { getPhysicalItems, passStockFirewall } from '../../src/features/inventory';
 import { deleteTransaction, saveTxEdit } from '../../src/features/transactions';
+import { exportLedgerCSV, forceCloseAllDesks } from '../../src/features/admin';
 import { generateReceiptNo, getStrictDate } from '../../src/utils/helpers';
 
 const CASH_ACTIONS = [
@@ -299,9 +300,24 @@ Total ERS: ${reportTotals.ersTotal} Tk
             <Text style={styles.statLabel}>ERS Sent</Text>
             <Text style={[styles.statValueSmall, { color: '#f59e0b' }]}>{reportTotals.ersTotal} Tk</Text>
           </View>
-        </View>
-
-        <View style={styles.header}>
+        {/* Admin Danger Zone - Visible only to Admins/Managers */}
+        {(appState.currentUserRole === 'admin' || appState.currentUserRole === 'manager') && (
+          <View style={styles.adminSection}>
+            <View style={styles.header}>
+              <Text style={[styles.headerTitle, { color: '#ef4444' }]}>Admin Tools</Text>
+            </View>
+            <View style={styles.grid}>
+              <TouchableOpacity style={styles.adminCard} onPress={() => exportLedgerCSV(getStrictDate())}>
+                <Feather name="file-text" size={20} color="#64748b" />
+                <Text style={styles.adminCardText}>Export CSV</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.adminCard, { borderColor: '#fca5a5' }]} onPress={forceCloseAllDesks}>
+                <Feather name="power" size={20} color="#ef4444" />
+                <Text style={[styles.adminCardText, { color: '#ef4444' }]}>Nuke Desks</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
           <Text style={styles.headerTitle}>Desk Actions</Text>
         </View>
 
@@ -579,3 +595,6 @@ header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'ce
   statLabel: { fontSize: 11, fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: 4 },
   statValue: { fontSize: 20, fontWeight: '800', color: '#0f172a' },
   statValueSmall: { fontSize: 16, fontWeight: '700', color: '#475569' },
+  adminSection: { marginTop: 10, padding: 12, backgroundColor: '#fff1f2', borderRadius: 20, marginBottom: 24, borderSize: 1, borderColor: '#fecaca' },
+  adminCard: { flex: 1, backgroundColor: '#ffffff', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', alignItems: 'center', gap: 6, flexDirection: 'row', justifyContent: 'center' },
+  adminCardText: { fontSize: 13, fontWeight: '700', color: '#475569' },
