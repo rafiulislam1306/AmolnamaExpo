@@ -49,7 +49,7 @@ Tracks both the legacy web app (source of logic) and the new native app (destina
 | `index.html` | Entire DOM structure, static modals, tab layout, bottom nav | ✅ Ported |
 | `src/main.js` | Entry point, `window.*` bindings, `switchTab()`, auth listener | ✅ Ported |
 | `src/config/firebase.js` | Firebase initialization | ✅ Ported → `src/config/firebase.ts` |
-| `src/core/state.js` | Global AppState object — all shared variables | ✅ Ported → `src/context/StateContext.tsx` |
+| `src/core/state.js` | Global AppState object — all shared variables | ✅ Ported → `src/core/StateContext.tsx` |
 | `src/core/constants.js` | Fixed app-wide constants | ⏳ Not yet ported |
 | `src/core/app-init.js` | App bootstrap logic, initial data loading | ⏳ Not yet ported |
 | `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal | ✅ Ported → `src/features/auth.ts` & `app/(tabs)/index.tsx` |
@@ -106,7 +106,7 @@ Amolnama-v2/
 | `app/(tabs)/floor.tsx` | Floor Map screen — desk selection, desk seeding, close desk |
 | **`src/`** | **Core System & Features** |
 | `src/config/firebase.ts` | Firebase initialization and modular SDK exports |
-| `src/context/StateContext.tsx` | Global AppState context. `useAppState()` hook. Wraps entire app |
+| `src/core/StateContext.tsx` | Global AppState context. `useAppState()` hook. Wraps entire app |
 | `src/features/auth.ts` | Native Google Sign-In logic, token handling, auth state listeners |
 | `src/features/transactions.ts` | `addTransactionToCloud`, `deleteTransaction`, `saveTxEdit` |
 | `src/features/desk.ts` | `handleDeskSelect`, `submitClosingReport` — desk engine |
@@ -139,7 +139,7 @@ AmolnamaExpo/
 ├── src/
 │   ├── config/
 │   │   └── firebase.ts
-│   ├── context/
+│   ├── core/
 │   │   └── StateContext.tsx
 │   ├── features/
 │   │   ├── auth.ts
