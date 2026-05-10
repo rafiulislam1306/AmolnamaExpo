@@ -162,3 +162,8 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Extracted `handleDeskSelect` and `submitClosingReport` into a standalone TypeScript engine (`desk.ts`). 
 * **UI Ported:** Built the Floor Tab (`floor.tsx`) using native UI components. Automatically handles default desk seeding if the Firestore collection is empty.
 * **Navigation:** Added `expo-router` logic to automatically push the user to the Drawer tab immediately after joining a desk. Wired up the native Close Desk confirmation alert.
+
+### Session 14: Native Edits & Trash Modals
+* **Engine Expansion:** Integrated `deleteTransaction` and `saveTxEdit` into `transactions.ts`, properly mapping to Firebase updateDoc calls.
+* **UI Integration:** Added the Edit Modal and inline Action Buttons (Edit/Trash icons) directly to the ledger cards in `drawer.tsx`.
+* **Standard Enforced:** Leveraged native `Alert.alert` for confirmation dialogues instead of custom web-based modals.
