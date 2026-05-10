@@ -1,5 +1,5 @@
 # 🤖 Amolnama POS: Native Expo AI Developer Manual
-**Version:** 4.0 (Native Android Port) | **Last Updated:** Session 14
+**Version:** 4.1 (Native Android Port) | **Last Updated:** Session 14
 
 > **⚠️ AI SYSTEM DIRECTIVE:**
 > You are acting as the Lead Android Developer for **Amolnama** — a native Point of Sale (POS) application built with **Expo, React Native, TypeScript, and Firebase**.
@@ -39,22 +39,55 @@
 Tracks both the legacy web app (source of logic) and the new native app (destination).
 
 ### 🏛️ Legacy Web App Reference (`Amolnama-v2` PWA)
-*Use this to know which old files to request when porting a feature.*
 
-| File / Folder | Responsibility |
-|---|---|
-| `index.html` | Entire DOM structure, static modals, tab layout, bottom nav |
-| `src/main.js` | Entry point, `window.*` bindings, `switchTab()`, auth listener |
-| `src/core/` | `state.js` (global AppState), `constants.js`, `app-init.js` |
-| `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal |
-| `src/features/catalog.js` | Rendered Store tab UI |
-| `src/features/transactions.js` | POS engine — ERS keypad, saving sales, editing, split payments, trash |
-| `src/features/inventory.js` | Stock calculation, `passStockFirewall` |
-| `src/features/desk.js` | Floor map, opening/closing desks, shift reconciliation |
-| `src/features/reports.js` | Ledger fetching, Drawer dashboard, personal reports, PDF generation |
-| `src/features/transfers.js` | Cash actions (drops/floats), main stock in/out, desk-to-desk transfers |
-| `src/features/admin.js` | Admin panel, user management, danger zone, CSV export |
-| `src/utils/` | `ui-helpers.js` (modals, alerts), `helpers.js` (date formatting, receipt generation) |
+> **⚠️ Rule 6 applies here.** Before porting any feature, identify which legacy file owns it from the table and tree below, then ask the user to paste that file's contents. Never write native port code without seeing the legacy source first.
+
+**Port status legend:** ✅ Ported | 🔄 Partially ported | ⏳ Not yet ported
+
+| File | Responsibility | Port Status |
+|---|---|---|
+| `index.html` | Entire DOM structure, static modals, tab layout, bottom nav | ✅ Ported |
+| `src/main.js` | Entry point, `window.*` bindings, `switchTab()`, auth listener | ✅ Ported |
+| `src/config/firebase.js` | Firebase initialization | ✅ Ported → `src/config/firebase.ts` |
+| `src/core/state.js` | Global AppState object — all shared variables | ✅ Ported → `src/context/StateContext.tsx` |
+| `src/core/constants.js` | Fixed app-wide constants | ⏳ Not yet ported |
+| `src/core/app-init.js` | App bootstrap logic, initial data loading | ⏳ Not yet ported |
+| `src/features/auth.js` | Google Sign-In, Logout, Profile Hub modal | ✅ Ported → `src/features/auth.ts` |
+| `src/features/catalog.js` | Store tab UI, item rendering | ✅ Ported → `app/(tabs)/explore.tsx` |
+| `src/features/transactions.js` | POS engine — ERS keypad, saving sales, editing, split payments, trash | 🔄 Partially ported → `src/features/transactions.ts` |
+| `src/features/inventory.js` | Stock calculation, `passStockFirewall` | ✅ Ported → `src/utils/inventory.ts` |
+| `src/features/desk.js` | Floor map, opening/closing desks, shift reconciliation | 🔄 Partially ported → `src/features/desk.ts` |
+| `src/features/reports.js` | Ledger fetching, Drawer dashboard, personal reports, PDF generation | ⏳ Not yet ported |
+| `src/features/transfers.js` | Cash actions (drops/floats), main stock in/out, desk-to-desk transfers | ✅ Ported → `app/(tabs)/drawer.tsx` |
+| `src/features/admin.js` | Admin panel, user management, danger zone, CSV export | ⏳ Not yet ported |
+| `src/utils/helpers.js` | Date formatting, receipt generation | ✅ Ported → `src/utils/helpers.ts` |
+| `src/utils/ui-helpers.js` | Web modals, alerts, flash messages | ✅ Replaced by native `Alert.alert` and `<Modal>` |
+
+**Legacy File Tree** *(for reference — port-relevant files only)*
+```
+Amolnama-v2/
+├── src/
+│   ├── config/
+│   │   └── firebase.js
+│   ├── core/
+│   │   ├── app-init.js
+│   │   ├── constants.js
+│   │   └── state.js
+│   ├── features/
+│   │   ├── admin.js
+│   │   ├── auth.js
+│   │   ├── catalog.js
+│   │   ├── desk.js
+│   │   ├── inventory.js
+│   │   ├── reports.js
+│   │   ├── transactions.js
+│   │   └── transfers.js
+│   ├── utils/
+│   │   ├── helpers.js
+│   │   └── ui-helpers.js
+│   └── main.js
+└── index.html
+```
 
 ---
 
@@ -94,75 +127,31 @@ Tracks both the legacy web app (source of logic) and the new native app (destina
 
 ```
 AmolnamaExpo/
-├── .vscode
-│   ├── extensions.json
-│   └── settings.json
-├── app
-│   ├── (tabs)
-│   │   ├── _layout.tsx
-│   │   ├── drawer.tsx
-│   │   ├── explore.tsx
-│   │   ├── floor.tsx
-│   │   ├── index.tsx
-│   │   └── report.tsx
+├── app/
 │   ├── _layout.tsx
 │   ├── login.tsx
-│   └── modal.tsx
-├── assets
-│   └── images
-│       ├── android-icon-background.png
-│       ├── android-icon-foreground.png
-│       ├── android-icon-monochrome.png
-│       ├── favicon.png
-│       ├── icon.png
-│       ├── partial-react-logo.png
-│       ├── react-logo.png
-│       ├── react-logo@2x.png
-│       ├── react-logo@3x.png
-│       └── splash-icon.png
-├── components
-│   ├── ui
-│   │   ├── collapsible.tsx
-│   │   ├── icon-symbol.ios.tsx
-│   │   └── icon-symbol.tsx
-│   ├── external-link.tsx
-│   ├── haptic-tab.tsx
-│   ├── hello-wave.tsx
-│   ├── parallax-scroll-view.tsx
-│   ├── themed-text.tsx
-│   └── themed-view.tsx
-├── constants
-│   └── theme.ts
-├── hooks
-│   ├── use-color-scheme.ts
-│   ├── use-color-scheme.web.ts
-│   └── use-theme-color.ts
-├── scripts
-│   └── reset-project.js
-├── src
-│   ├── config
+│   └── (tabs)/
+│       ├── _layout.tsx
+│       ├── index.tsx
+│       ├── explore.tsx
+│       ├── drawer.tsx
+│       └── floor.tsx
+├── src/
+│   ├── config/
 │   │   └── firebase.ts
-│   ├── core
-│   │   ├── state.ts
+│   ├── context/
 │   │   └── StateContext.tsx
-│   ├── features
+│   ├── features/
 │   │   ├── auth.ts
-│   │   ├── desk.ts
-│   │   ├── inventory.ts
-│   │   └── transactions.ts
-│   └── utils
-│       └── helpers.ts
-├── .gitignore
-├── app.json
-├── eas.json
-├── eslint.config.js
-├── expo-env.d.ts
-├── google-services.json
-├── package-lock.json
-├── package.json
-├── README.md
+│   │   ├── transactions.ts
+│   │   └── desk.ts
+│   └── utils/
+│       ├── helpers.ts
+│       └── inventory.ts
 ├── tree.js
-└── tsconfig.json
+├── filetree.txt
+├── package.json
+└── README.md
 ```
 
 > **How to set up `npm run tree`:** Create `tree.js` in your project root with the script below, then add `"tree": "node tree.js"` to the `scripts` block in `package.json`.
@@ -237,6 +226,14 @@ Never manually trigger UI re-renders (e.g. the legacy `renderAppUI()` function).
 
 ### 🟡 Rule 5: Ask Before Assuming
 If a file is not pasted in the current session, always ask the user for it before writing any code that modifies it. Never reconstruct file contents from memory or session history.
+
+### 🟡 Rule 6: Always Read the Legacy Source Before Porting
+Before writing any native port code for a feature:
+1. Identify the legacy file that owns that feature using the legacy table and tree in Section 1.
+2. Ask the user to paste that legacy file's contents.
+3. Only after reading the legacy source — write the native implementation.
+- *Format:* "To port this feature I need to see the legacy source. Please paste **[legacy filename]**."
+- **Never assume** how a legacy function works from its name alone. The legacy code may have constraints, firewall checks, or multi-write logic that are not obvious without reading it.
 
 ---
 
@@ -327,6 +324,7 @@ When the user requests a change, follow these steps strictly:
 3. **Provide Find & Replace:** Give the user exact, word-for-word code replacements. Do not say "modify the function" — give the exact block to overwrite.
    - *Format:* "Open **[filename]**. Find this exact code: `[old code]`. Replace it with: `[new code]`."
 4. **Never Guess File Contents:** If a file has not been pasted in this session, always ask for it. Never reconstruct it from memory or session history (Rule 5).
+5. **Always Read Legacy Source Before Porting:** Identify the legacy file from Section 1, ask the user to paste it, then write the native code (Rule 6).
 
 ---
 
@@ -431,4 +429,4 @@ When the user requests a change, follow these steps strictly:
 ---
 
 > **AI ACKNOWLEDGEMENT:** If you have fully read this manual, reply with:
-> *"Native Amolnama Developer Manual v4.0 loaded. Ready — what would you like to build next?"*
+> *"Native Amolnama Developer Manual v4.1 loaded. Ready — what would you like to build next?"*
