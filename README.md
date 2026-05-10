@@ -120,3 +120,7 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Built real-time Firestore listener for `drawer.tsx`.
 * **Standard Enforced:** Rule 4 (State Drives UI). Replaced legacy manual HTML string injection with React `useState` array mapping.
 * **Fix Applied:** Enforced Rule 2 on `drawer.tsx` by setting `SafeAreaView edges={['top']}` to prevent tab bar clipping.
+
+### Session 5: Global AppState Context
+* **Native Implementation:** Converted legacy `state.js` object into a native React `createContext` setup (`StateContext.tsx`).
+* **Standard Enforced:** Rule 4 (State Drives UI). App is now wrapped in `<AppStateProvider>` at the root `_layout.tsx`, allowing any screen to trigger native re-renders using `useAppState()`.

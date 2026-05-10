@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { AppStateProvider } from '../src/core/StateContext';
 import { initAuth } from '../src/features/auth';
 import LoginScreen from './login';
 
@@ -37,13 +38,15 @@ export default function RootLayout() {
     );
   }
 
-  // If user is found, render the Navigation Stack (Tabs)
+  // If user is found, render the Navigation Stack (Tabs) WRAPPED in the AppStateProvider
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-      <StatusBar style="dark" />
-    </SafeAreaProvider>
+    <AppStateProvider>
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+        <StatusBar style="dark" />
+      </SafeAreaProvider>
+    </AppStateProvider>
   );
 }
