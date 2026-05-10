@@ -115,3 +115,8 @@ When the user requests a change, follow these steps strictly:
 ---
 > **AI ACKNOWLEDGEMENT:** If you have fully read this manual, reply with:
 > *"Native Amolnama Developer Manual loaded. Ready — what would you like to build next?"*
+
+### Session 4: Drawer Tab Migration
+* **Native Implementation:** Built real-time Firestore listener for `drawer.tsx`.
+* **Standard Enforced:** Rule 4 (State Drives UI). Replaced legacy manual HTML string injection with React `useState` array mapping.
+* **Fix Applied:** Enforced Rule 2 on `drawer.tsx` by setting `SafeAreaView edges={['top']}` to prevent tab bar clipping.
