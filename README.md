@@ -124,3 +124,8 @@ When the user requests a change, follow these steps strictly:
 ### Session 5: Global AppState Context
 * **Native Implementation:** Converted legacy `state.js` object into a native React `createContext` setup (`StateContext.tsx`).
 * **Standard Enforced:** Rule 4 (State Drives UI). App is now wrapped in `<AppStateProvider>` at the root `_layout.tsx`, allowing any screen to trigger native re-renders using `useAppState()`.
+
+### Session 6: Native Cash Actions Modal
+* **Native Implementation:** Embedded a React Native `<Modal>` component directly into `drawer.tsx`.
+* **Standard Enforced:** Rule 1 (No DOM). Replaced complex custom dropdown HTML logic with native `TouchableOpacity` segments. Utilized `Alert.alert` instead of legacy flash messages. 
+* **State Integration:** Leveraged `useAppState` context to successfully attach global session and desk IDs to new Firebase transactions natively.

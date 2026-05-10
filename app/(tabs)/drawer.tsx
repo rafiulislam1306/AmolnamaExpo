@@ -1,21 +1,33 @@
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
+import { useAppState } from '../../src/core/StateContext';
+
+const CASH_ACTIONS = [
+  { label: 'Manager Float (Cash In)', value: 'receive_float' },
+  { label: 'Handset Cash (Cash In)', value: 'handset_cash' },
+  { label: 'Manager Drop (Cash Out)', value: 'drop_manager' },
+  { label: 'Expense / Donation (Cash Out)', value: 'expense' }
+];
 
 export default function DrawerScreen() {
+  const appState = useAppState(); // Hook into our new global state
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal State
+  const [isCashModalVisible, setCashModalVisible] = useState(false);
+  const [cashAmount, setCashAmount] = useState('');
+  const [cashAction, setCashAction] = useState('receive_float');
+
   useEffect(() => {
-    // Native State Management: Listen to Firebase directly
     if (!auth.currentUser) {
       setLoading(false);
       return;
     }
 
-    // Fetching user's non-deleted transactions for the ledger
     const txQuery = query(
       collection(db, 'transactions'),
       where('agentId', '==', auth.currentUser.uid),
@@ -28,9 +40,7 @@ export default function DrawerScreen() {
         txList.push({ id: doc.id, ...doc.data() });
       });
       
-      // Sort newest first based on the internal ID timestamp from your web app
       txList.sort((a, b) => (b.id || 0) - (a.id || 0));
-      
       setTransactions(txList);
       setLoading(false);
     }, (error) => {
@@ -41,6 +51,66 @@ export default function DrawerScreen() {
     return () => unsubscribe();
   }, []);
 
+  const handleSaveCash = async () => {
+    const amount = parseFloat(cashAmount) || 0;
+    if (amount <= 0) { 
+      Alert.alert("Invalid Input", "Enter a valid amount."); 
+      return; 
+    }
+    
+    // Safety check replicated from legacy code
+    if (!appState.currentSessionId && appState.currentDeskId !== 'sandbox') { 
+      Alert.alert("Error", "Desk not open."); 
+      return; 
+    }
+
+    const isCashIn = cashAction === 'receive_float' || cashAction === 'handset_cash';
+    const finalValue = isCashIn ? amount : -amount;
+
+    let txName = 'Cash Adjustment';
+    let paymentLabel = '';
+
+    if (cashAction === 'drop_manager') { txName = 'Manager Drop'; paymentLabel = 'Dropped to Manager'; }
+    else if (cashAction === 'expense') { txName = 'Expense / Donation'; paymentLabel = 'Cash Out'; }
+    else if (cashAction === 'handset_cash') { txName = 'Handset Cash'; paymentLabel = 'Cash In (Holding)'; }
+    else if (cashAction === 'receive_float') { txName = 'Manager Float'; paymentLabel = 'Cash In (Float)'; }
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
+    const tx = {
+      id: Date.now(), 
+      receiptNo: 'TX-' + Math.floor(Math.random() * 1000000), // Native random fallback until helpers are ported
+      type: 'adjustment', 
+      name: txName, 
+      trackAs: 'Physical Cash', 
+      amount: amount, 
+      qty: 1,
+      payment: paymentLabel, 
+      cashAmt: finalValue, 
+      mfsAmt: 0, 
+      isDeleted: false,
+      time: timeStr,
+      dateStr: dateStr, 
+      deskId: appState.currentDeskId || 'unknown', 
+      sessionId: appState.currentSessionId || 'unknown', 
+      agentId: auth.currentUser?.uid || 'unknown', 
+      agentName: appState.userNickname || appState.userDisplayName || 'Agent'
+    };
+
+    try {
+      await addDoc(collection(db, 'transactions'), tx);
+      setCashModalVisible(false);
+      setCashAmount('');
+      setCashAction('receive_float'); // reset
+      Alert.alert("Success", `${txName} Logged!`);
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Failed to save cash action.");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView style={styles.container}>
@@ -49,7 +119,10 @@ export default function DrawerScreen() {
         </View>
 
         <View style={styles.grid}>
-          <TouchableOpacity style={styles.actionCard}>
+          <TouchableOpacity 
+            style={styles.actionCard} 
+            onPress={() => setCashModalVisible(true)}
+          >
             <View style={[styles.iconBox, { backgroundColor: '#dcfce7' }]}>
               <Text style={{ fontSize: 20 }}>💵</Text>
             </View>
@@ -113,9 +186,55 @@ export default function DrawerScreen() {
           })
         )}
 
-        {/* Bottom padding so scroll doesn't cut off behind the tab bar */}
         <View style={{ height: 100 }} /> 
       </ScrollView>
+
+      {/* NATIVE MODAL FOR CASH ACTIONS */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isCashModalVisible}
+        onRequestClose={() => setCashModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Manager Cash Action</Text>
+            
+            <Text style={styles.inputLabel}>Amount (Tk)</Text>
+            <TextInput
+              style={styles.textInput}
+              keyboardType="numeric"
+              placeholder="0"
+              value={cashAmount}
+              onChangeText={setCashAmount}
+            />
+
+            <Text style={styles.inputLabel}>Action Type</Text>
+            <View style={styles.radioGroup}>
+              {CASH_ACTIONS.map((option) => (
+                <TouchableOpacity 
+                  key={option.value} 
+                  style={[styles.radioBtn, cashAction === option.value && styles.radioBtnActive]}
+                  onPress={() => setCashAction(option.value)}
+                >
+                  <Text style={[styles.radioText, cashAction === option.value && styles.radioTextActive]}>
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setCashModalVisible(false)}>
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalSaveBtn} onPress={handleSaveCash}>
+                <Text style={styles.modalSaveText}>Save Record</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -140,5 +259,22 @@ const styles = StyleSheet.create({
   txDetails: { flex: 1, justifyContent: 'center' },
   txName: { fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
   txMeta: { fontSize: 12, color: '#64748b', fontWeight: '500' },
-  txAmount: { fontSize: 18, fontWeight: '800' }
+  txAmount: { fontSize: 18, fontWeight: '800' },
+  
+  // Modal Styles
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.6)', justifyContent: 'center', alignItems: 'center', padding: 20 },
+  modalContent: { backgroundColor: '#ffffff', width: '100%', borderRadius: 20, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 10 },
+  modalTitle: { fontSize: 20, fontWeight: '800', color: '#0f172a', marginBottom: 20 },
+  inputLabel: { fontSize: 14, fontWeight: '700', color: '#64748b', marginBottom: 8, marginTop: 12 },
+  textInput: { backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, padding: 16, fontSize: 18, fontWeight: '600', color: '#0f172a', marginBottom: 8 },
+  radioGroup: { gap: 8, marginBottom: 24 },
+  radioBtn: { padding: 14, borderRadius: 10, borderWidth: 1, borderColor: '#e2e8f0', backgroundColor: '#f8fafc' },
+  radioBtnActive: { borderColor: '#0ea5e9', backgroundColor: '#f0f9ff' },
+  radioText: { fontSize: 15, fontWeight: '600', color: '#64748b' },
+  radioTextActive: { color: '#0369a1', fontWeight: '700' },
+  modalActionRow: { flexDirection: 'row', gap: 12 },
+  modalCancelBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#f1f5f9', alignItems: 'center' },
+  modalCancelText: { color: '#64748b', fontWeight: '700', fontSize: 16 },
+  modalSaveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#0ea5e9', alignItems: 'center' },
+  modalSaveText: { color: '#ffffff', fontWeight: '700', fontSize: 16 }
 });
