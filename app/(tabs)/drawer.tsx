@@ -1,10 +1,12 @@
-import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
 
+// Temporary Constants until helpers/inventory are ported
+const PHYSICAL_ITEMS = ['SIM Card', 'Router', 'Device']; 
 const CASH_ACTIONS = [
   { label: 'Manager Float (Cash In)', value: 'receive_float' },
   { label: 'Handset Cash (Cash In)', value: 'handset_cash' },
@@ -13,14 +15,29 @@ const CASH_ACTIONS = [
 ];
 
 export default function DrawerScreen() {
-  const appState = useAppState(); // Hook into our new global state
+  const appState = useAppState();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal State
+  // --- Modal States ---
   const [isCashModalVisible, setCashModalVisible] = useState(false);
   const [cashAmount, setCashAmount] = useState('');
   const [cashAction, setCashAction] = useState('receive_float');
+
+  const [isMainStockModalVisible, setMainStockModalVisible] = useState(false);
+  const [mainStockQty, setMainStockQty] = useState('');
+  const [mainStockItem, setMainStockItem] = useState(PHYSICAL_ITEMS[0]);
+
+  const [isReturnStockModalVisible, setReturnStockModalVisible] = useState(false);
+  const [returnStockQty, setReturnStockQty] = useState('');
+  const [returnStockItem, setReturnStockItem] = useState(PHYSICAL_ITEMS[0]);
+
+  const [isDeskTransferModalVisible, setDeskTransferModalVisible] = useState(false);
+  const [deskTransferQty, setDeskTransferQty] = useState('');
+  const [deskTransferItem, setDeskTransferItem] = useState(PHYSICAL_ITEMS[0]);
+  const [activeDesks, setActiveDesks] = useState<any[]>([]);
+  const [targetDesk, setTargetDesk] = useState<any>(null);
+  const [transferDirection, setTransferDirection] = useState('send');
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -39,34 +56,36 @@ export default function DrawerScreen() {
       snapshot.forEach((doc) => {
         txList.push({ id: doc.id, ...doc.data() });
       });
-      
       txList.sort((a, b) => (b.id || 0) - (a.id || 0));
       setTransactions(txList);
       setLoading(false);
-    }, (error) => {
-      console.error("Error fetching native ledger:", error);
-      setLoading(false);
-    });
+    }, (error) => console.error("Error fetching native ledger:", error));
 
     return () => unsubscribe();
   }, []);
 
+  // --- Utility for generating base transaction object ---
+  const createBaseTx = () => {
+    const now = new Date();
+    return {
+      id: Date.now(),
+      receiptNo: 'TX-' + Math.floor(Math.random() * 1000000),
+      time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      dateStr: now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'),
+      deskId: appState.currentDeskId || 'unknown',
+      sessionId: appState.currentSessionId || 'unknown',
+      agentId: auth.currentUser?.uid || 'unknown',
+      agentName: appState.userNickname || appState.userDisplayName || 'Agent',
+      isDeleted: false
+    };
+  };
+
+  // --- Handlers ---
   const handleSaveCash = async () => {
     const amount = parseFloat(cashAmount) || 0;
-    if (amount <= 0) { 
-      Alert.alert("Invalid Input", "Enter a valid amount."); 
-      return; 
-    }
+    if (amount <= 0) return Alert.alert("Invalid Input", "Enter a valid amount.");
     
-    // Safety check replicated from legacy code
-    if (!appState.currentSessionId && appState.currentDeskId !== 'sandbox') { 
-      Alert.alert("Error", "Desk not open."); 
-      return; 
-    }
-
     const isCashIn = cashAction === 'receive_float' || cashAction === 'handset_cash';
-    const finalValue = isCashIn ? amount : -amount;
-
     let txName = 'Cash Adjustment';
     let paymentLabel = '';
 
@@ -75,39 +94,105 @@ export default function DrawerScreen() {
     else if (cashAction === 'handset_cash') { txName = 'Handset Cash'; paymentLabel = 'Cash In (Holding)'; }
     else if (cashAction === 'receive_float') { txName = 'Manager Float'; paymentLabel = 'Cash In (Float)'; }
 
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    const dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-
     const tx = {
-      id: Date.now(), 
-      receiptNo: 'TX-' + Math.floor(Math.random() * 1000000), // Native random fallback until helpers are ported
-      type: 'adjustment', 
-      name: txName, 
-      trackAs: 'Physical Cash', 
-      amount: amount, 
-      qty: 1,
-      payment: paymentLabel, 
-      cashAmt: finalValue, 
-      mfsAmt: 0, 
-      isDeleted: false,
-      time: timeStr,
-      dateStr: dateStr, 
-      deskId: appState.currentDeskId || 'unknown', 
-      sessionId: appState.currentSessionId || 'unknown', 
-      agentId: auth.currentUser?.uid || 'unknown', 
-      agentName: appState.userNickname || appState.userDisplayName || 'Agent'
+      ...createBaseTx(),
+      type: 'adjustment', name: txName, trackAs: 'Physical Cash', amount: amount, qty: 1,
+      payment: paymentLabel, cashAmt: isCashIn ? amount : -amount, mfsAmt: 0
     };
 
     try {
       await addDoc(collection(db, 'transactions'), tx);
-      setCashModalVisible(false);
-      setCashAmount('');
-      setCashAction('receive_float'); // reset
+      setCashModalVisible(false); setCashAmount(''); setCashAction('receive_float');
       Alert.alert("Success", `${txName} Logged!`);
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Failed to save cash action.");
+    } catch (e) { Alert.alert("Error", "Failed to save."); }
+  };
+
+  const handleSaveMainStock = async () => {
+    const qty = parseInt(mainStockQty) || 0;
+    if (qty <= 0) return Alert.alert("Invalid Input", "Enter a valid quantity.");
+
+    const tx = {
+      ...createBaseTx(),
+      type: 'transfer_in', name: mainStockItem, trackAs: mainStockItem, amount: 0, qty: qty,
+      payment: 'Received from Main Stock', cashAmt: 0, mfsAmt: 0
+    };
+
+    try {
+      await addDoc(collection(db, 'transactions'), tx);
+      setMainStockModalVisible(false); setMainStockQty('');
+      Alert.alert("Success", `+${qty}x ${mainStockItem} Added!`);
+    } catch (e) { Alert.alert("Error", "Failed to add stock."); }
+  };
+
+  const handleSaveReturnStock = async () => {
+    const qty = parseInt(returnStockQty) || 0;
+    if (qty <= 0) return Alert.alert("Invalid Input", "Enter a valid quantity.");
+    // TODO: Port passStockFirewall from inventory.js later
+
+    const tx = {
+      ...createBaseTx(),
+      type: 'transfer_out', name: returnStockItem, trackAs: returnStockItem, amount: 0, qty: qty,
+      payment: 'Returned to Main Stock', cashAmt: 0, mfsAmt: 0
+    };
+
+    try {
+      await addDoc(collection(db, 'transactions'), tx);
+      setReturnStockModalVisible(false); setReturnStockQty('');
+      Alert.alert("Success", `-${qty}x ${returnStockItem} Returned!`);
+    } catch (e) { Alert.alert("Error", "Failed to return stock."); }
+  };
+
+  const openDeskTransferModal = async () => {
+    setDeskTransferModalVisible(true);
+    setTargetDesk(null);
+    try {
+      const activeSessionsSnap = await getDocs(query(collection(db, 'sessions'), where('status', '==', 'open')));
+      let desks: any[] = [];
+      for (const docSnap of activeSessionsSnap.docs) {
+        let deskData = docSnap.data();
+        if(deskData.deskId !== appState.currentDeskId) {
+          let displayName = deskData.deskId.replace('_', ' ').toUpperCase();
+          try {
+            const deskSnap = await getDoc(doc(db, 'desks', deskData.deskId));
+            if (deskSnap.exists() && deskSnap.data().name) displayName = deskSnap.data().name;
+          } catch(e) {}
+          desks.push({ id: deskData.deskId, sessionId: docSnap.id, name: displayName });
+        }
+      }
+      setActiveDesks(desks);
+    } catch (e) { Alert.alert("Error", "Could not fetch active desks."); }
+  };
+
+  const handleExecuteDeskTransfer = async () => {
+    const qty = parseInt(deskTransferQty) || 0;
+    if (qty <= 0) return Alert.alert("Invalid Input", "Enter valid quantity.");
+    if (!targetDesk) return Alert.alert("Error", "Please select a target desk.");
+
+    const baseTx = createBaseTx();
+    
+    let senderTx, receiverTx;
+
+    if (transferDirection === 'send') {
+      senderTx = { ...baseTx, type: 'transfer_out', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Sent to ${targetDesk.name}`, cashAmt: 0, mfsAmt: 0 };
+      receiverTx = { ...baseTx, id: baseTx.id + 1, type: 'transfer_in', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Received from ${appState.currentDeskName || 'Agent'}`, cashAmt: 0, mfsAmt: 0, deskId: targetDesk.id, sessionId: targetDesk.sessionId, isRemoteTransfer: true };
+      
+      try {
+        await addDoc(collection(db, 'transactions'), senderTx);
+        await addDoc(collection(db, 'transactions'), receiverTx);
+        setDeskTransferModalVisible(false); setDeskTransferQty('');
+        Alert.alert("Success", `Sent ${qty}x ${deskTransferItem} to ${targetDesk.name}!`);
+      } catch (e) { Alert.alert("Error", "Transfer failed."); }
+    } else {
+      // Pull logic (Skipping remote stock check for now until inventory is ported)
+      senderTx = { ...baseTx, type: 'transfer_out', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Pulled by ${appState.currentDeskName || 'Agent'}`, cashAmt: 0, mfsAmt: 0, deskId: targetDesk.id, sessionId: targetDesk.sessionId, isRemoteTransfer: true };
+      receiverTx = { ...baseTx, id: baseTx.id + 1, type: 'transfer_in', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Pulled from ${targetDesk.name}`, cashAmt: 0, mfsAmt: 0 };
+      
+      try {
+        await addDoc(collection(db, 'transactions'), senderTx);
+        await addDoc(collection(db, 'transactions'), receiverTx);
+        setDeskTransferModalVisible(false); setDeskTransferQty('');
+        Alert.alert("Success", `Pulled ${qty}x ${deskTransferItem} from ${targetDesk.name}!`);
+      } catch (e) { Alert.alert("Error", "Pull failed."); }
     }
   };
 
@@ -119,41 +204,26 @@ export default function DrawerScreen() {
         </View>
 
         <View style={styles.grid}>
-          <TouchableOpacity 
-            style={styles.actionCard} 
-            onPress={() => setCashModalVisible(true)}
-          >
-            <View style={[styles.iconBox, { backgroundColor: '#dcfce7' }]}>
-              <Text style={{ fontSize: 20 }}>💵</Text>
-            </View>
+          <TouchableOpacity style={styles.actionCard} onPress={() => setCashModalVisible(true)}>
+            <View style={[styles.iconBox, { backgroundColor: '#dcfce7' }]}><Text style={{ fontSize: 20 }}>💵</Text></View>
             <Text style={styles.actionText}>Cash Actions</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard}>
-            <View style={[styles.iconBox, { backgroundColor: '#f3e8ff' }]}>
-              <Text style={{ fontSize: 20 }}>🔄</Text>
-            </View>
+          <TouchableOpacity style={styles.actionCard} onPress={openDeskTransferModal}>
+            <View style={[styles.iconBox, { backgroundColor: '#f3e8ff' }]}><Text style={{ fontSize: 20 }}>🔄</Text></View>
             <Text style={styles.actionText}>Desk Transfer</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard}>
-            <View style={[styles.iconBox, { backgroundColor: '#e0f2fe' }]}>
-              <Text style={{ fontSize: 20 }}>📦</Text>
-            </View>
+          <TouchableOpacity style={styles.actionCard} onPress={() => setMainStockModalVisible(true)}>
+            <View style={[styles.iconBox, { backgroundColor: '#e0f2fe' }]}><Text style={{ fontSize: 20 }}>📦</Text></View>
             <Text style={styles.actionText}>+ Main Stock</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard}>
-            <View style={[styles.iconBox, { backgroundColor: '#fee2e2' }]}>
-              <Text style={{ fontSize: 20 }}>↩️</Text>
-            </View>
+          <TouchableOpacity style={styles.actionCard} onPress={() => setReturnStockModalVisible(true)}>
+            <View style={[styles.iconBox, { backgroundColor: '#fee2e2' }]}><Text style={{ fontSize: 20 }}>↩️</Text></View>
             <Text style={styles.actionText}>− Return Stock</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.closeBtn}>
-          <Text style={styles.closeBtnText}>Close Desk</Text>
-        </TouchableOpacity>
 
         <View style={styles.ledgerHeader}>
           <Text style={styles.ledgerTitle}>DESK LEDGER</Text>
@@ -168,69 +238,127 @@ export default function DrawerScreen() {
             const isOutflow = tx.type === 'adjustment' || tx.type === 'transfer_out';
             const amtColor = isOutflow ? '#ef4444' : '#0f172a';
             const amtPrefix = isOutflow ? '− ' : '';
-            
             return (
               <View key={tx.docId || index} style={styles.txCard}>
-                <View style={styles.txIconBox}>
-                  <Text style={styles.txQty}>{tx.qty}x</Text>
-                </View>
+                <View style={styles.txIconBox}><Text style={styles.txQty}>{tx.qty}x</Text></View>
                 <View style={styles.txDetails}>
                   <Text style={styles.txName} numberOfLines={1}>{tx.name}</Text>
                   <Text style={styles.txMeta}>{tx.time} • {tx.payment}</Text>
                 </View>
-                <Text style={[styles.txAmount, { color: amtColor }]}>
-                  {amtPrefix}{Math.abs(tx.amount || 0)}
-                </Text>
+                <Text style={[styles.txAmount, { color: amtColor }]}>{amtPrefix}{Math.abs(tx.amount || 0)}</Text>
               </View>
             );
           })
         )}
-
         <View style={{ height: 100 }} /> 
       </ScrollView>
 
-      {/* NATIVE MODAL FOR CASH ACTIONS */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isCashModalVisible}
-        onRequestClose={() => setCashModalVisible(false)}
-      >
+      {/* 1. CASH MODAL */}
+      <Modal animationType="slide" transparent={true} visible={isCashModalVisible} onRequestClose={() => setCashModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Manager Cash Action</Text>
-            
             <Text style={styles.inputLabel}>Amount (Tk)</Text>
-            <TextInput
-              style={styles.textInput}
-              keyboardType="numeric"
-              placeholder="0"
-              value={cashAmount}
-              onChangeText={setCashAmount}
-            />
-
+            <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={cashAmount} onChangeText={setCashAmount} />
             <Text style={styles.inputLabel}>Action Type</Text>
             <View style={styles.radioGroup}>
               {CASH_ACTIONS.map((option) => (
-                <TouchableOpacity 
-                  key={option.value} 
-                  style={[styles.radioBtn, cashAction === option.value && styles.radioBtnActive]}
-                  onPress={() => setCashAction(option.value)}
-                >
-                  <Text style={[styles.radioText, cashAction === option.value && styles.radioTextActive]}>
-                    {option.label}
-                  </Text>
+                <TouchableOpacity key={option.value} style={[styles.radioBtn, cashAction === option.value && styles.radioBtnActive]} onPress={() => setCashAction(option.value)}>
+                  <Text style={[styles.radioText, cashAction === option.value && styles.radioTextActive]}>{option.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setCashModalVisible(false)}><Text style={styles.modalCancelText}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.modalSaveBtn} onPress={handleSaveCash}><Text style={styles.modalSaveText}>Save Record</Text></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* 2. MAIN STOCK MODAL */}
+      <Modal animationType="slide" transparent={true} visible={isMainStockModalVisible} onRequestClose={() => setMainStockModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Main Stock</Text>
+            <Text style={styles.inputLabel}>Quantity</Text>
+            <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={mainStockQty} onChangeText={setMainStockQty} />
+            <Text style={styles.inputLabel}>Select Item</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
+              {PHYSICAL_ITEMS.map((item) => (
+                <TouchableOpacity key={item} style={[styles.pillBtn, mainStockItem === item && styles.pillBtnActive]} onPress={() => setMainStockItem(item)}>
+                  <Text style={[styles.pillText, mainStockItem === item && styles.pillTextActive]}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setMainStockModalVisible(false)}><Text style={styles.modalCancelText}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.modalSaveBtn} onPress={handleSaveMainStock}><Text style={styles.modalSaveText}>Add Stock</Text></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* 3. RETURN STOCK MODAL */}
+      <Modal animationType="slide" transparent={true} visible={isReturnStockModalVisible} onRequestClose={() => setReturnStockModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Return to Main Stock</Text>
+            <Text style={styles.inputLabel}>Quantity</Text>
+            <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={returnStockQty} onChangeText={setReturnStockQty} />
+            <Text style={styles.inputLabel}>Select Item</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
+              {PHYSICAL_ITEMS.map((item) => (
+                <TouchableOpacity key={item} style={[styles.pillBtn, returnStockItem === item && styles.pillBtnActive]} onPress={() => setReturnStockItem(item)}>
+                  <Text style={[styles.pillText, returnStockItem === item && styles.pillTextActive]}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setReturnStockModalVisible(false)}><Text style={styles.modalCancelText}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.modalSaveBtn, {backgroundColor: '#ef4444'}]} onPress={handleSaveReturnStock}><Text style={styles.modalSaveText}>Return Stock</Text></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* 4. DESK TRANSFER MODAL */}
+      <Modal animationType="slide" transparent={true} visible={isDeskTransferModalVisible} onRequestClose={() => setDeskTransferModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Desk-to-Desk Transfer</Text>
+            
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              <TouchableOpacity style={[styles.radioBtn, {flex: 1}, transferDirection === 'send' && styles.radioBtnActive]} onPress={() => setTransferDirection('send')}>
+                <Text style={[styles.radioText, {textAlign: 'center'}, transferDirection === 'send' && styles.radioTextActive]}>Send Stock</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.radioBtn, {flex: 1}, transferDirection === 'pull' && styles.radioBtnActive]} onPress={() => setTransferDirection('pull')}>
+                <Text style={[styles.radioText, {textAlign: 'center'}, transferDirection === 'pull' && styles.radioTextActive]}>Pull Stock</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.inputLabel}>Target Desk</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
+              {activeDesks.length === 0 ? <Text style={styles.emptyText}>No other desks open</Text> : activeDesks.map((desk) => (
+                <TouchableOpacity key={desk.id} style={[styles.pillBtn, targetDesk?.id === desk.id && styles.pillBtnActive]} onPress={() => setTargetDesk(desk)}>
+                  <Text style={[styles.pillText, targetDesk?.id === desk.id && styles.pillTextActive]}>{desk.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={styles.inputLabel}>Quantity & Item</Text>
+            <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={deskTransferQty} onChangeText={setDeskTransferQty} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
+              {PHYSICAL_ITEMS.map((item) => (
+                <TouchableOpacity key={item} style={[styles.pillBtn, deskTransferItem === item && styles.pillBtnActive]} onPress={() => setDeskTransferItem(item)}>
+                  <Text style={[styles.pillText, deskTransferItem === item && styles.pillTextActive]}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
             <View style={styles.modalActionRow}>
-              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setCashModalVisible(false)}>
-                <Text style={styles.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalSaveBtn} onPress={handleSaveCash}>
-                <Text style={styles.modalSaveText}>Save Record</Text>
-              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setDeskTransferModalVisible(false)}><Text style={styles.modalCancelText}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.modalSaveBtn, {backgroundColor: '#8b5cf6'}]} onPress={handleExecuteDeskTransfer}><Text style={styles.modalSaveText}>Execute Transfer</Text></TouchableOpacity>
             </View>
           </View>
         </View>
@@ -261,7 +389,6 @@ const styles = StyleSheet.create({
   txMeta: { fontSize: 12, color: '#64748b', fontWeight: '500' },
   txAmount: { fontSize: 18, fontWeight: '800' },
   
-  // Modal Styles
   modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.6)', justifyContent: 'center', alignItems: 'center', padding: 20 },
   modalContent: { backgroundColor: '#ffffff', width: '100%', borderRadius: 20, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 10 },
   modalTitle: { fontSize: 20, fontWeight: '800', color: '#0f172a', marginBottom: 20 },
@@ -272,6 +399,10 @@ const styles = StyleSheet.create({
   radioBtnActive: { borderColor: '#0ea5e9', backgroundColor: '#f0f9ff' },
   radioText: { fontSize: 15, fontWeight: '600', color: '#64748b' },
   radioTextActive: { color: '#0369a1', fontWeight: '700' },
+  pillBtn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#f1f5f9', marginRight: 8, height: 40 },
+  pillBtnActive: { backgroundColor: '#0f172a' },
+  pillText: { color: '#64748b', fontWeight: '600' },
+  pillTextActive: { color: '#ffffff' },
   modalActionRow: { flexDirection: 'row', gap: 12 },
   modalCancelBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#f1f5f9', alignItems: 'center' },
   modalCancelText: { color: '#64748b', fontWeight: '700', fontSize: 16 },

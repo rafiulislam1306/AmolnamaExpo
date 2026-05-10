@@ -129,3 +129,8 @@ When the user requests a change, follow these steps strictly:
 * **Native Implementation:** Embedded a React Native `<Modal>` component directly into `drawer.tsx`.
 * **Standard Enforced:** Rule 1 (No DOM). Replaced complex custom dropdown HTML logic with native `TouchableOpacity` segments. Utilized `Alert.alert` instead of legacy flash messages. 
 * **State Integration:** Leveraged `useAppState` context to successfully attach global session and desk IDs to new Firebase transactions natively.
+
+### Session 7: Complete Drawer Actions
+* **Native Implementation:** Embedded native `<Modal>` components for Main Stock, Return Stock, and Desk Transfer actions.
+* **Standard Enforced:** Replaced legacy web `<select>` tags with horizontal `<ScrollView>` pill buttons for 100% native UI componentry.
+* **Logic Ported:** Translated complex double-write Firebase transactions (Send/Pull transfers) directly into native handlers. Added `createBaseTx()` utility to maintain data consistency.
