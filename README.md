@@ -422,6 +422,12 @@ When the user requests a change, follow these steps strictly:
 - **Rules applied:** Rule 1, Rule 3
 - **Notes:** Added `deleteTransaction` and `saveTxEdit` to `transactions.ts` using Firebase `updateDoc`. Added Edit Modal and inline Edit/Trash action buttons to ledger cards in `drawer.tsx`. Used `Alert.alert` for confirmation dialogues.
 
+### Session 15: Native Reporting Dashboard
+* **Native Implementation:** Built real-time report logic in `report.tsx` with high-performance state derivation.
+* **Standard Enforced:** Rule 1 & 4. Replaced legacy manual HTML string injection and `document.getElementById` calls with unified React state.
+* **Feature Ported:** Implemented the "Personal" vs "Center" report toggle with automatic role-based defaults.
+* **Export Strategy:** Integrated the native Android `Share` API for text-based reports, replacing legacy web-only PDF/Image libraries.
+
 ---
 
 > **AI ACKNOWLEDGEMENT:** If you have fully read this manual, reply with:
