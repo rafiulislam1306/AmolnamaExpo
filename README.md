@@ -275,13 +275,15 @@ Before writing any native port code for a feature:
 
 | Field | Type | Status |
 |---|---|---|
-| `user.uid` | `string` | ✅ confirmed Session 5 |
-| `user.name` | `string` | ✅ confirmed Session 5 |
-| `user.photo` | `string` (URL) | ✅ confirmed Session 11 |
-| `user.role` | `string` | ✅ confirmed Session 5 |
-| `deskId` | `string` | ✅ confirmed Session 6 |
-| `sessionId` | `string` | ✅ confirmed Session 6 |
+| `currentUser` | `any` (Firebase User) | ✅ confirmed Session 5 |
+| `userDisplayName` | `string` | ✅ confirmed Session 5 |
+| `userNickname` | `string` | ✅ confirmed Session 16 |
+| `currentUserRole` | `string` | ✅ confirmed Session 5 |
+| `currentDeskId` | `string` | ✅ confirmed Session 6 |
+| `currentSessionId` | `string` | ✅ confirmed Session 6 |
 | `isMfs` | `boolean` | ✅ confirmed Session 10 |
+| `globalCatalog` | `Record<string, any>` | ✅ confirmed Session 10 |
+| `currentOpeningInv` | `Record<string, number>` | ✅ confirmed Session 9 |
 
 ---
 
