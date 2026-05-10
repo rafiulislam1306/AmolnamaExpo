@@ -4,10 +4,9 @@ import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInpu
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../src/config/firebase';
 import { useAppState } from '../../src/core/StateContext';
+import { getPhysicalItems, passStockFirewall } from '../../src/features/inventory';
 import { generateReceiptNo, getStrictDate } from '../../src/utils/helpers';
 
-// Temporary Constants until helpers/inventory are ported
-const PHYSICAL_ITEMS = ['SIM Card', 'Router', 'Device']; 
 const CASH_ACTIONS = [
   { label: 'Manager Float (Cash In)', value: 'receive_float' },
   { label: 'Handset Cash (Cash In)', value: 'handset_cash' },
@@ -17,6 +16,8 @@ const CASH_ACTIONS = [
 
 export default function DrawerScreen() {
   const appState = useAppState();
+  const physicalItems = getPhysicalItems(appState);
+  
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,15 +28,15 @@ export default function DrawerScreen() {
 
   const [isMainStockModalVisible, setMainStockModalVisible] = useState(false);
   const [mainStockQty, setMainStockQty] = useState('');
-  const [mainStockItem, setMainStockItem] = useState(PHYSICAL_ITEMS[0]);
+  const [mainStockItem, setMainStockItem] = useState(physicalItems[0] || 'Item');
 
   const [isReturnStockModalVisible, setReturnStockModalVisible] = useState(false);
   const [returnStockQty, setReturnStockQty] = useState('');
-  const [returnStockItem, setReturnStockItem] = useState(PHYSICAL_ITEMS[0]);
+  const [returnStockItem, setReturnStockItem] = useState(physicalItems[0] || 'Item');
 
   const [isDeskTransferModalVisible, setDeskTransferModalVisible] = useState(false);
   const [deskTransferQty, setDeskTransferQty] = useState('');
-  const [deskTransferItem, setDeskTransferItem] = useState(PHYSICAL_ITEMS[0]);
+  const [deskTransferItem, setDeskTransferItem] = useState(physicalItems[0] || 'Item');
   const [activeDesks, setActiveDesks] = useState<any[]>([]);
   const [targetDesk, setTargetDesk] = useState<any>(null);
   const [transferDirection, setTransferDirection] = useState('send');
@@ -65,7 +66,6 @@ export default function DrawerScreen() {
     return () => unsubscribe();
   }, []);
 
-  // --- Utility for generating base transaction object ---
   const createBaseTx = () => {
     const now = new Date();
     return {
@@ -81,7 +81,6 @@ export default function DrawerScreen() {
     };
   };
 
-  // --- Handlers ---
   const handleSaveCash = async () => {
     const amount = parseFloat(cashAmount) || 0;
     if (amount <= 0) return Alert.alert("Invalid Input", "Enter a valid amount.");
@@ -128,7 +127,9 @@ export default function DrawerScreen() {
   const handleSaveReturnStock = async () => {
     const qty = parseInt(returnStockQty) || 0;
     if (qty <= 0) return Alert.alert("Invalid Input", "Enter a valid quantity.");
-    // TODO: Port passStockFirewall from inventory.js later
+    
+    // FIREWALL CHECK
+    if (!passStockFirewall(returnStockItem, qty, appState)) return;
 
     const tx = {
       ...createBaseTx(),
@@ -170,10 +171,12 @@ export default function DrawerScreen() {
     if (!targetDesk) return Alert.alert("Error", "Please select a target desk.");
 
     const baseTx = createBaseTx();
-    
     let senderTx, receiverTx;
 
     if (transferDirection === 'send') {
+      // FIREWALL CHECK
+      if (!passStockFirewall(deskTransferItem, qty, appState)) return;
+
       senderTx = { ...baseTx, type: 'transfer_out', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Sent to ${targetDesk.name}`, cashAmt: 0, mfsAmt: 0 };
       receiverTx = { ...baseTx, id: baseTx.id + 1, type: 'transfer_in', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Received from ${appState.currentDeskName || 'Agent'}`, cashAmt: 0, mfsAmt: 0, deskId: targetDesk.id, sessionId: targetDesk.sessionId, isRemoteTransfer: true };
       
@@ -184,7 +187,6 @@ export default function DrawerScreen() {
         Alert.alert("Success", `Sent ${qty}x ${deskTransferItem} to ${targetDesk.name}!`);
       } catch (e) { Alert.alert("Error", "Transfer failed."); }
     } else {
-      // Pull logic (Skipping remote stock check for now until inventory is ported)
       senderTx = { ...baseTx, type: 'transfer_out', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Pulled by ${appState.currentDeskName || 'Agent'}`, cashAmt: 0, mfsAmt: 0, deskId: targetDesk.id, sessionId: targetDesk.sessionId, isRemoteTransfer: true };
       receiverTx = { ...baseTx, id: baseTx.id + 1, type: 'transfer_in', name: deskTransferItem, trackAs: deskTransferItem, amount: 0, qty: qty, payment: `Pulled from ${targetDesk.name}`, cashAmt: 0, mfsAmt: 0 };
       
@@ -286,7 +288,7 @@ export default function DrawerScreen() {
             <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={mainStockQty} onChangeText={setMainStockQty} />
             <Text style={styles.inputLabel}>Select Item</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
-              {PHYSICAL_ITEMS.map((item) => (
+              {physicalItems.map((item: string) => (
                 <TouchableOpacity key={item} style={[styles.pillBtn, mainStockItem === item && styles.pillBtnActive]} onPress={() => setMainStockItem(item)}>
                   <Text style={[styles.pillText, mainStockItem === item && styles.pillTextActive]}>{item}</Text>
                 </TouchableOpacity>
@@ -309,7 +311,7 @@ export default function DrawerScreen() {
             <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={returnStockQty} onChangeText={setReturnStockQty} />
             <Text style={styles.inputLabel}>Select Item</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
-              {PHYSICAL_ITEMS.map((item) => (
+              {physicalItems.map((item: string) => (
                 <TouchableOpacity key={item} style={[styles.pillBtn, returnStockItem === item && styles.pillBtnActive]} onPress={() => setReturnStockItem(item)}>
                   <Text style={[styles.pillText, returnStockItem === item && styles.pillTextActive]}>{item}</Text>
                 </TouchableOpacity>
@@ -350,7 +352,7 @@ export default function DrawerScreen() {
             <Text style={styles.inputLabel}>Quantity & Item</Text>
             <TextInput style={styles.textInput} keyboardType="numeric" placeholder="0" value={deskTransferQty} onChangeText={setDeskTransferQty} />
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
-              {PHYSICAL_ITEMS.map((item) => (
+              {physicalItems.map((item: string) => (
                 <TouchableOpacity key={item} style={[styles.pillBtn, deskTransferItem === item && styles.pillBtnActive]} onPress={() => setDeskTransferItem(item)}>
                   <Text style={[styles.pillText, deskTransferItem === item && styles.pillTextActive]}>{item}</Text>
                 </TouchableOpacity>

@@ -138,3 +138,7 @@ When the user requests a change, follow these steps strictly:
 ### Session 8: Native Utilities Port
 * **Native Implementation:** Ported `helpers.js` to strictly-typed `helpers.ts`. 
 * **Integration:** Wired `generateReceiptNo` and `getStrictDate` into `drawer.tsx`, fixing a temporary timestamp bug and restoring legacy parity for official transaction receipts.
+
+### Session 9: Inventory & Stock Firewall
+* **Native Implementation:** Ported `inventory.js` to `inventory.ts`. Refactored functions to accept `appState` natively instead of relying on a global DOM singleton. Dropped legacy DOM UI logic.
+* **Integration:** Replaced dummy item lists in `drawer.tsx` with dynamic `getPhysicalItems` calls. Activated `passStockFirewall` to prevent agents from sending or returning stock they do not possess.
