@@ -54,7 +54,7 @@ export default function DrawerScreen() {
   const [editCashAmt, setEditCashAmt] = useState('');
   const [editMfsAmt, setEditMfsAmt] = useState('');
 
-  // --- Native Reporting Engine (Ported from legacy reports.js) ---
+  // --- Native Reporting Engine ---
   const reportTotals = useMemo(() => {
     let cashSales = 0;
     let mfsSales = 0;
@@ -238,7 +238,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
     } catch (e) { Alert.alert("Error", "Transfer failed."); }
   };
 
-  // --- Edit Handlers ---
   const openEditTxModal = (tx: any) => {
     setEditTxData(tx);
     setEditQty(tx.qty.toString());
@@ -282,7 +281,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
           </TouchableOpacity>
         </View>
 
-        {/* Ported Summary Dashboard */}
         <View style={styles.dashboardGrid}>
           <View style={styles.statCard}>
             <Text style={styles.statLabel}>Expected Cash</Text>
@@ -302,7 +300,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
           </View>
         </View>
 
-        {/* Admin Danger Zone - Visible only to Admins/Managers */}
         {(appState.currentUserRole === 'admin' || appState.currentUserRole === 'manager') && (
           <View style={styles.adminSection}>
             <View style={styles.header}>
@@ -395,8 +392,7 @@ Total ERS: ${reportTotals.ersTotal} Tk
         <View style={{ height: 100 }} /> 
       </ScrollView>
 
-      {/* --- Action Modals (Cash, Main, Return, Desk Transfer) OMITTED FOR BREVITY BUT FULLY PRESERVED --- */}
-      {/* 1. CASH MODAL */}
+      {/* --- Action Modals --- */}
       <Modal animationType="slide" transparent={true} visible={isCashModalVisible} onRequestClose={() => setCashModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -419,7 +415,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
         </View>
       </Modal>
 
-      {/* 2. MAIN STOCK MODAL */}
       <Modal animationType="slide" transparent={true} visible={isMainStockModalVisible} onRequestClose={() => setMainStockModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -442,7 +437,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
         </View>
       </Modal>
 
-      {/* 3. RETURN STOCK MODAL */}
       <Modal animationType="slide" transparent={true} visible={isReturnStockModalVisible} onRequestClose={() => setReturnStockModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -465,7 +459,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
         </View>
       </Modal>
 
-      {/* 4. DESK TRANSFER MODAL */}
       <Modal animationType="slide" transparent={true} visible={isDeskTransferModalVisible} onRequestClose={() => setDeskTransferModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -503,7 +496,6 @@ Total ERS: ${reportTotals.ersTotal} Tk
         </View>
       </Modal>
 
-      {/* --- EDIT MODAL --- */}
       <Modal animationType="slide" transparent={true} visible={isEditModalVisible} onRequestClose={() => setEditModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -590,7 +582,6 @@ const styles = StyleSheet.create({
   modalCancelText: { color: '#64748b', fontWeight: '700', fontSize: 16 },
   modalSaveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#0ea5e9', alignItems: 'center' },
   modalSaveText: { color: '#ffffff', fontWeight: '700', fontSize: 16 },
-  // New Styles
   dashboardGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
   statCard: { width: '48.5%', backgroundColor: '#ffffff', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' },
   statCardSmall: { width: '48.5%', backgroundColor: '#f8fafc', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0' },
