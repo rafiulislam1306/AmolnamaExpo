@@ -1,279 +1,552 @@
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { db } from '@/src/config/firebase';
+import { useAppState } from '@/src/core/StateContext';
+import { COLORS } from '@/src/core/theme';
+import { Feather } from '@expo/vector-icons';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppState } from '../../src/core/StateContext';
-import { passStockFirewall } from '../../src/features/inventory';
-import { addTransactionToCloud } from '../../src/features/transactions';
-
-// Fallback catalog if global state hasn't loaded yet
-const defaultCatalog = {
-  "sim_no1": { name: 'No. 1 Plan', display: 'No. 1 Plan', price: 497, cat: 'new-sim', trackAs: 'No. 1 Plan', isActive: true, order: 1 },
-  "sim_prime": { name: 'Prime', display: 'Prime', price: 400, cat: 'new-sim', trackAs: 'Prime', isActive: true, order: 2 },
-  "sim_djuice": { name: 'Djuice', display: 'Djuice', price: 400, cat: 'new-sim', trackAs: 'Djuice', isActive: true, order: 3 },
-  "sim_skitto": { name: 'Skitto', display: 'Skitto', price: 400, cat: 'new-sim', trackAs: 'Skitto Kit', isActive: true, order: 4 },
-  "sim_esim_pre": { name: 'eSIM Prepaid', display: 'eSIM Prepaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 5 },
-  "sim_esim_post": { name: 'eSIM Postpaid', display: 'eSIM Postpaid', price: 400, cat: 'new-sim', trackAs: 'eSIM', isActive: true, order: 6 },
-  "sim_power": { name: 'Power Prime', display: 'Power Prime', price: 1499, cat: 'new-sim', trackAs: 'Power Prime', isActive: true, order: 7 },
-  "sim_recycle": { name: 'Recycle SIM', display: 'Recycle SIM', price: 400, cat: 'new-sim', trackAs: 'Recycle SIM', isActive: true, order: 8 },
-  "sim_my": { name: 'My SIM', display: 'My SIM', price: 400, cat: 'new-sim', trackAs: 'Regular Kit', isActive: true, order: 9 },
-  "rep_regular": { name: 'Regular Replacement', display: 'Regular', price: 400, cat: 'paid-rep', trackAs: 'Regular Kit', isActive: true, order: 10 },
-  "rep_skitto": { name: 'Skitto Replacement', display: 'Skitto', price: 400, cat: 'paid-rep', trackAs: 'Skitto Kit', isActive: true, order: 11 },
-  "rep_esim": { name: 'eSIM Replacement', display: 'eSIM', price: 349, cat: 'paid-rep', trackAs: 'eSIM', isActive: true, order: 12 },
-  "rep_skitto_esim": { name: 'Skitto eSIM Replacement', display: 'Skitto eSIM', price: 349, cat: 'paid-rep', trackAs: 'Skitto eSIM', isActive: true, order: 13 },
-  "foc_regular": { name: 'FOC Regular', display: 'Regular', price: 0, cat: 'foc', trackAs: 'Regular Kit', isActive: true, order: 14 },
-  "foc_skitto": { name: 'FOC Skitto', display: 'Skitto', price: 0, cat: 'foc', trackAs: 'Skitto Kit', isActive: true, order: 15 },
-  "foc_esim": { name: 'FOC eSIM', display: 'eSIM', price: 0, cat: 'foc', trackAs: 'eSIM', isActive: true, order: 16 },
-  "foc_skitto_esim": { name: 'FOC Skitto eSIM', display: 'Skitto eSIM', price: 0, cat: 'foc', trackAs: 'Skitto eSIM', isActive: true, order: 17 },
-  "srv_recycle": { name: 'Recycle SIM Reissue', display: 'Recycle SIM Reissue', price: 115, cat: 'service', trackAs: '', isActive: true, order: 18 },
-  "srv_itemized": { name: 'Itemized Bill', display: 'Itemized Bill', price: 230, cat: 'service', trackAs: '', isActive: true, order: 19 },
-  "srv_owner": { name: 'Ownership Transfer', display: 'Ownership Transfer', price: 115, cat: 'service', trackAs: '', isActive: true, order: 20 },
-  "srv_mnp": { name: 'MNP', display: 'MNP', price: 457.50, cat: 'service', trackAs: '', isActive: true, order: 21 },
-  "foc_corp": { name: 'Corporate Replacement', display: 'Corporate Replacement', price: 0, cat: 'free-action', trackAs: '', isActive: true, order: 22 }
-};
+import { Alert, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
 
 export default function StoreScreen() {
-  const appState = useAppState();
+  const { appState, updateAppState } = useAppState();
+  
+  // Category & Modal State
   const [activeCategory, setActiveCategory] = useState('new-sim');
-
-  // Quantity Modal State
-  const [isQtyModalVisible, setQtyModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [qtyValue, setQtyValue] = useState('1');
+  const [qtyAmount, setQtyAmount] = useState('1');
+  const [isSaving, setIsSaving] = useState(false);
 
-  const catalogSource = appState.globalCatalog && Object.keys(appState.globalCatalog).length > 0 
-    ? appState.globalCatalog 
-    : defaultCatalog;
+  // --- CATALOG DATA PREP ---
+  // Using globalCatalog, fallback to mock if empty
+  const rawCatalog = appState.globalCatalog && Object.keys(appState.globalCatalog).length > 0 
+    ? Object.values(appState.globalCatalog) 
+    : [
+        { name: 'Banglalink New SIM', price: 200, cat: 'new-sim', order: 1, isActive: true },
+        { name: '4G Upgrade (Free)', price: 0, cat: 'foc', order: 2, isActive: true },
+        { name: 'SIM Replacement', price: 100, cat: 'paid-rep', order: 3, isActive: true },
+        { name: 'Prepaid to Postpaid', price: 0, cat: 'service', order: 4, isActive: true },
+      ];
 
+  // Map PWA categories
   const categories = [
     { id: 'new-sim', label: 'New SIMs' },
     { id: 'paid-rep', label: 'Replacements' },
     { id: 'service', label: 'Services' },
-    { id: 'foc', label: 'Free Actions' },
+    { id: 'foc', label: 'Free Actions' }, // Groups 'foc' and 'free-action'
   ];
 
-  const getCategoryIcon = (cat: string) => {
-    switch (cat) {
-      case 'new-sim': return <Feather name="simcard" size={20} color="#0ea5e9" />;
-      case 'paid-rep': return <MaterialCommunityIcons name="package-variant" size={20} color="#8b5cf6" />;
-      case 'foc':
-      case 'free-action': return <Feather name="check-circle" size={20} color="#10b981" />;
-      case 'service': return <Feather name="layers" size={20} color="#f59e0b" />;
-      default: return <Feather name="box" size={20} color="#64748b" />;
-    }
-  };
-
-  // --- Transaction Handlers ---
-  const handleItemPress = async (item: any) => {
-    if (!passStockFirewall(item.name, 1, appState)) return;
-    const paymentMethod = (item.price > 0 && appState.isMfs) ? "MFS" : "Cash";
-    await addTransactionToCloud('Item', item.name, item.price, 1, paymentMethod, appState);
-  };
-
-  const handleItemLongPress = (item: any) => {
-    setSelectedItem(item);
-    setQtyValue('1');
-    setQtyModalVisible(true);
-  };
-
-  const handleQtyKeyPress = (val: string) => {
-    setQtyValue((prev) => {
-      if (prev === '0') return val;
-      if ((prev + val).length > 3) return prev; // Max 3 digits like web app
-      return prev + val;
-    });
-  };
-
-  const handleQtyBackspace = () => {
-    setQtyValue((prev) => (prev.length > 1 ? prev.slice(0, -1) : '0'));
-  };
-
-  const handleSaveQuantity = async () => {
-    const qtyInt = parseInt(qtyValue) || 0;
-    if (qtyInt <= 0) return Alert.alert("Invalid Input", "Quantity must be 1 or more.");
-    if (!selectedItem) return;
-
-    if (!passStockFirewall(selectedItem.name, qtyInt, appState)) return;
-
-    const totalPrice = qtyInt * selectedItem.price;
-    const paymentMethod = (selectedItem.price > 0 && appState.isMfs) ? "MFS" : "Cash";
-
-    const success = await addTransactionToCloud('Item', selectedItem.name, totalPrice, qtyInt, paymentMethod, appState);
-    if (success) {
-      setQtyModalVisible(false);
-      setSelectedItem(null);
-    }
-  };
-
-  const filteredItems = Object.values(catalogSource)
+  const filteredItems = rawCatalog
+    .filter((item: any) => item.isActive !== false)
     .filter((item: any) => {
-        const uiCategory = item.cat === 'free-action' ? 'foc' : item.cat;
-        return item.isActive !== false && uiCategory === activeCategory;
+      if (activeCategory === 'foc') return item.cat === 'foc' || item.cat === 'free-action';
+      return item.cat === activeCategory;
     })
     .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <View style={styles.container}>
-        
-        {/* Sticky Store Controls */}
-        <View style={styles.headerControls}>
-          <View style={styles.toggleContainer}>
-            <Text style={styles.toggleLabel}>Payment Mode</Text>
-            <View style={styles.toggleSwitch}>
-              <TouchableOpacity 
-                style={[styles.toggleOption, !appState.isMfs && styles.toggleOptionActive]}
-                onPress={() => appState.updateAppState({ isMfs: false })}>
-                <Text style={[styles.toggleText, !appState.isMfs && styles.toggleTextActive]}>Cash</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.toggleOption, appState.isMfs && styles.toggleOptionActive]}
-                onPress={() => appState.updateAppState({ isMfs: true })}>
-                <Text style={[styles.toggleText, appState.isMfs && styles.toggleTextActive]}>MFS</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+  // --- CORE TRANSACTION SAVER ---
+  const saveTransaction = async (itemName: string, price: number, qty: number) => {
+    if (!appState.currentSessionId) {
+      Alert.alert("Desk Closed", "You must open your desk from the Floor Map first.");
+      return;
+    }
+    
+    // Check lock permission
+    const itemData = rawCatalog.find((c:any) => c.name === itemName);
+    const isLocked = itemData?.managerOnly && !['manager', 'center_manager', 'owner'].includes(appState.currentUserRole);
+    if (isLocked) {
+      Alert.alert("Access Denied", "🔒 Only a Center Manager can process this item.");
+      return;
+    }
 
-          <View style={styles.pillsWrapper}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillsContainer}>
-              {categories.map((cat) => (
-                <TouchableOpacity 
-                  key={cat.id} 
-                  style={[styles.storePill, activeCategory === cat.id && styles.storePillActive]}
-                  onPress={() => setActiveCategory(cat.id)}>
-                  <Text style={[styles.pillText, activeCategory === cat.id && styles.pillTextActive]}>{cat.label}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+    if (isSaving) return;
+    setIsSaving(true);
+    
+    const amount = price * qty;
+    const paymentMethod = (price > 0 && appState.isMfs) ? "MFS" : "Cash";
+    const cashAmt = paymentMethod === 'Cash' ? amount : 0;
+    const mfsAmt = paymentMethod === 'MFS' ? amount : 0;
+
+    const d = new Date();
+    const strictDate = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+
+    const tx = {
+      id: Date.now(),
+      receiptNo: `TX-${Date.now().toString().slice(-6)}`,
+      type: 'Item', name: itemName, trackAs: itemData?.trackAs || itemName, amount, qty, payment: paymentMethod, cashAmt, mfsAmt,
+      isDeleted: false, dateStr: strictDate,
+      time: d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      deskId: appState.currentDeskId, sessionId: appState.currentSessionId,
+      agentId: appState.currentUser?.uid || 'unknown',
+      agentName: appState.userNickname || appState.userDisplayName || 'Agent',
+      timestamp: serverTimestamp()
+    };
+
+    try {
+      await addDoc(collection(db, 'transactions'), tx);
+      Alert.alert("Success", `${qty}x ${itemName} Logged!`);
+      setModalVisible(false);
+    } catch (error) {
+      Alert.alert("Storage Error", "Could not save transaction.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // --- INTERACTION LOGIC ---
+  const handleItemPress = (item: any) => {
+    saveTransaction(item.name, parseFloat(item.price) || 0, 1);
+  };
+
+  const handleItemLongPress = (item: any) => {
+    Vibration.vibrate(50);
+    setSelectedItem(item);
+    setQtyAmount('1');
+    setModalVisible(true);
+  };
+
+  const handleQtyPress = (num: string) => {
+    Vibration.vibrate(10);
+    if (qtyAmount === '0') setQtyAmount(num);
+    else if (qtyAmount.length < 3) setQtyAmount(qtyAmount + num);
+  };
+
+  const handleQtyBackspace = () => {
+    Vibration.vibrate(15);
+    setQtyAmount(qtyAmount.length > 1 ? qtyAmount.slice(0, -1) : '0');
+  };
+
+  // UI Helpers
+  const getIconProps = (cat: string) => {
+    if (cat === 'new-sim') return { icon: 'credit-card', color: '#0ea5e9', bg: '#e0f2fe' };
+    if (cat === 'paid-rep') return { icon: 'refresh-cw', color: '#8b5cf6', bg: '#f3e8ff' };
+    if (cat === 'service') return { icon: 'star', color: '#f59e0b', bg: '#fef3c7' };
+    return { icon: 'check-circle', color: '#10b981', bg: '#d1fae5' }; // FOC
+  };
+
+  return (
+    <View style={styles.container}>
+      
+      {/* 1. Sticky Glass Panel Controls */}
+      <View style={styles.glassPanel}>
+        {/* Toggle Switch */}
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleLabel}>Payment Mode</Text>
+          <View style={styles.toggleSwitch}>
+            <TouchableOpacity 
+              style={[styles.toggleOption, !appState.isMfs && styles.toggleOptionActive]} 
+              onPress={() => updateAppState({isMfs: false})}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleText, !appState.isMfs && styles.toggleTextActive]}>Cash</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.toggleOption, appState.isMfs && styles.toggleOptionActive]} 
+              onPress={() => updateAppState({isMfs: true})}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleText, appState.isMfs && styles.toggleTextActive]}>MFS</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Dynamic Product List */}
-        <ScrollView style={styles.listContainer}>
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item: any, index) => (
-              <TouchableOpacity 
-                key={index} 
-                style={styles.itemRow}
-                onPress={() => handleItemPress(item)}
-                onLongPress={() => handleItemLongPress(item)}
-                delayLongPress={400}
-              >
-                <View style={styles.itemLeft}>
-                  <View style={styles.iconContainer}>
-                    {getCategoryIcon(item.cat)}
-                  </View>
-                  <View>
-                    <Text style={styles.itemName}>{item.display || item.name}</Text>
-                    <Text style={styles.itemSubtext}>Tap to add • Hold for Qty</Text>
-                  </View>
-                </View>
-                <View style={styles.itemRight}>
-                  {item.price > 0 ? (
-                    <Text style={styles.itemPrice}>{item.price} Tk</Text>
-                  ) : (
-                    <Text style={[styles.itemPrice, { color: '#10b981' }]}>Free</Text>
-                  )}
-                  <View style={styles.plusCircle}>
-                    <Feather name="plus" size={16} color="#0f172a" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>No items found in this category.</Text>
-            </View>
-          )}
-          <View style={{ height: 100 }} /> 
+        {/* Store Category Pills */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillScroll}>
+          {categories.map(cat => (
+            <TouchableOpacity 
+              key={cat.id} 
+              style={[styles.storePill, activeCategory === cat.id && styles.storePillActive]}
+              onPress={() => setActiveCategory(cat.id)}
+            >
+              <Text style={[styles.storePillText, activeCategory === cat.id && styles.storePillTextActive]}>
+                {cat.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
 
-      {/* Quantity Modal */}
-      <Modal animationType="slide" transparent={true} visible={isQtyModalVisible} onRequestClose={() => setQtyModalVisible(false)}>
+      {/* 2. Catalog List */}
+      <ScrollView style={styles.scrollArea}>
+        <View style={styles.listContainer}>
+          {filteredItems.length === 0 ? (
+            <Text style={{textAlign: 'center', padding: 20, color: COLORS.textSecondary}}>No items in this category.</Text>
+          ) : (
+            filteredItems.map((item: any, index: number) => {
+              const { icon, color, bg } = getIconProps(item.cat);
+              const isLocked = item.managerOnly && !['manager', 'center_manager', 'owner'].includes(appState.currentUserRole);
+              const price = parseFloat(item.price) || 0;
+              const isLast = index === filteredItems.length - 1;
+
+              return (
+                <TouchableOpacity 
+                  key={item.key || index}
+                  style={[
+                    styles.dynamicItem, 
+                    isLocked && { backgroundColor: '#f8fafc', opacity: 0.6 },
+                    isLast && { borderBottomWidth: 0 }
+                  ]}
+                  activeOpacity={0.7}
+                  onPress={() => handleItemPress(item)}
+                  onLongPress={() => handleItemLongPress(item)}
+                  delayLongPress={400}
+                >
+                  <View style={styles.itemLeft}>
+                    <View style={[styles.itemIconBox, { backgroundColor: isLocked ? '#f1f5f9' : bg }]}>
+                      <Feather name={icon as any} size={20} color={isLocked ? '#94a3b8' : color} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.itemName, isLocked && { color: '#94a3b8' }]} numberOfLines={1}>{item.display || item.name}</Text>
+                      {isLocked && <Text style={styles.itemLockedText}>🔒 Center Manager Only</Text>}
+                    </View>
+                  </View>
+                  
+                  <View style={styles.itemRight}>
+                    {price > 0 ? (
+                      <Text style={styles.itemPriceText}>{price} <Text style={styles.itemPriceCurrency}>Tk</Text></Text>
+                    ) : (
+                      <View style={styles.freeBadge}><Text style={styles.freeBadgeText}>FREE</Text></View>
+                    )}
+                    
+                    {isLocked ? (
+                      <Feather name="lock" size={20} color="#ef4444" style={{ marginLeft: 12 }} />
+                    ) : (
+                      <View style={styles.actionCircleIcon}>
+                        <Feather name="chevron-right" size={16} color={COLORS.accent} />
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
+        </View>
+        <View style={{height: 40}}/>
+      </ScrollView>
+
+      {/* 3. Quantity Bottom Sheet Modal */}
+      <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{selectedItem?.display || selectedItem?.name}</Text>
+          <View style={styles.bottomSheet}>
+            <View style={styles.sheetHandle} />
+            <Text style={styles.qtyHeader}>{selectedItem?.name}</Text>
             
-            <View style={styles.qtyDisplayBox}>
-              <Text style={styles.qtyDisplayText}>{qtyValue}</Text>
+            <View style={styles.displayWrapper}>
+              <Text style={styles.currency}>Qty:</Text>
+              <Text style={styles.display}>{qtyAmount}</Text>
             </View>
             
-            <Text style={styles.calcText}>
-              {selectedItem?.price === 0 
+            <Text style={styles.qtyCalc}>
+              {parseFloat(selectedItem?.price) === 0 
                 ? 'Inventory Update (0 Tk)' 
-                : `${qtyValue || 0} x ${selectedItem?.price || 0} = ${(parseInt(qtyValue) || 0) * (selectedItem?.price || 0)} Tk`
-              }
+                : `${parseInt(qtyAmount || '0')} x ${selectedItem?.price} = ${(parseInt(qtyAmount || '0') * parseFloat(selectedItem?.price))} Tk`}
             </Text>
 
             <View style={styles.keypad}>
-              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((key) => (
-                <TouchableOpacity key={key} style={styles.keypadBtn} onPress={() => handleQtyKeyPress(key)}>
-                  <Text style={styles.keypadBtnText}>{key}</Text>
-                </TouchableOpacity>
+              {[['1','2','3'],['4','5','6'],['7','8','9']].map((row, rIdx) => (
+                <View key={rIdx} style={styles.keypadRow}>
+                  {row.map(num => (
+                    <TouchableOpacity key={num} style={styles.keypadBtn} activeOpacity={0.7} onPress={() => handleQtyPress(num)}>
+                      <Text style={styles.keypadText}>{num}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               ))}
-              <TouchableOpacity style={styles.keypadBtn} onPress={() => setQtyModalVisible(false)}>
-                <Text style={styles.keypadBtnText}>✕</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.keypadBtn} onPress={() => handleQtyKeyPress('0')}>
-                <Text style={styles.keypadBtnText}>0</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.keypadBtn, { backgroundColor: '#fef2f2', borderColor: '#fee2e2' }]} onPress={handleQtyBackspace}>
-                <Text style={[styles.keypadBtnText, { color: '#ef4444' }]}>⌫</Text>
-              </TouchableOpacity>
+              <View style={styles.keypadRow}>
+                <View style={[styles.keypadBtn, {backgroundColor: 'transparent', elevation: 0}]} />
+                <TouchableOpacity style={styles.keypadBtn} activeOpacity={0.7} onPress={() => handleQtyPress('0')}>
+                  <Text style={styles.keypadText}>0</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.keypadBtn, {backgroundColor: COLORS.dangerBg}]} activeOpacity={0.7} onPress={handleQtyBackspace}>
+                  <Feather name="delete" size={28} color={COLORS.dangerText} />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <TouchableOpacity style={styles.saveBtn} onPress={handleSaveQuantity}>
-              <Text style={styles.saveBtnText}>Save Quantity</Text>
-            </TouchableOpacity>
-
+            <View style={{flexDirection: 'row', gap: 12}}>
+              <TouchableOpacity style={[styles.saveBtn, {backgroundColor: '#e2e8f0', flex: 0.5}]} onPress={() => setModalVisible(false)}>
+                <Text style={[styles.saveBtnText, {color: COLORS.textSecondary}]}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.saveBtn} onPress={() => {
+                saveTransaction(selectedItem.name, parseFloat(selectedItem.price)||0, parseInt(qtyAmount)||0);
+              }}>
+                <Text style={styles.saveBtnText}>SAVE</Text>
+              </TouchableOpacity>
+            </View>
+            
           </View>
         </View>
       </Modal>
 
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#f8fafc' },
-  container: { flex: 1 },
-  headerControls: { backgroundColor: '#ffffff', borderBottomWidth: 1, borderBottomColor: '#e2e8f0', paddingTop: 16, paddingBottom: 4, paddingHorizontal: 16, elevation: 2, zIndex: 50 },
-  toggleContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  toggleLabel: { fontWeight: '700', color: '#64748b', fontSize: 16 },
-  toggleSwitch: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 20, padding: 4 },
-  toggleOption: { paddingVertical: 6, paddingHorizontal: 16, borderRadius: 16 },
-  toggleOptionActive: { backgroundColor: '#ffffff', elevation: 1 },
-  toggleText: { fontWeight: '600', color: '#64748b' },
-  toggleTextActive: { color: '#0f172a' },
-  pillsWrapper: { paddingBottom: 12 },
-  pillsContainer: { gap: 8 },
-  storePill: { paddingVertical: 8, paddingHorizontal: 16, backgroundColor: '#f1f5f9', borderRadius: 20 },
-  storePillActive: { backgroundColor: '#0f172a' },
-  pillText: { fontWeight: '600', color: '#64748b' },
-  pillTextActive: { color: '#ffffff' },
-  listContainer: { flex: 1, backgroundColor: '#ffffff', margin: 16, borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0' },
-  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
-  itemLeft: { flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1 },
-  iconContainer: { width: 40, height: 40, backgroundColor: '#f8fafc', borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  itemName: { fontWeight: '600', color: '#0f172a', fontSize: 16 },
-  itemSubtext: { fontSize: 12, color: '#94a3b8' },
-  itemRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  itemPrice: { fontSize: 14, fontWeight: '700', color: '#64748b' },
-  plusCircle: { width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center' },
-  emptyState: { padding: 32, alignItems: 'center' },
-  emptyStateText: { color: '#94a3b8', fontStyle: 'italic' },
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   
-  // Modal Styles
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.6)', justifyContent: 'flex-end', paddingBottom: 20, paddingHorizontal: 16 },
-  modalContent: { backgroundColor: '#ffffff', width: '100%', borderRadius: 24, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 10 },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#0f172a', textAlign: 'center', marginBottom: 16 },
-  qtyDisplayBox: { backgroundColor: '#f1f5f9', paddingVertical: 16, borderRadius: 16, alignItems: 'center', marginBottom: 8 },
-  qtyDisplayText: { fontSize: 40, fontWeight: '800', color: '#0f172a' },
-  calcText: { textAlign: 'center', fontSize: 14, color: '#64748b', fontWeight: '600', marginBottom: 24 },
-  keypad: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
-  keypadBtn: { width: '31%', backgroundColor: '#ffffff', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  keypadBtnText: { fontSize: 22, fontWeight: '700', color: '#334155' },
-  saveBtn: { backgroundColor: '#0ea5e9', padding: 18, borderRadius: 16, alignItems: 'center' },
-  saveBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 18 }
+  // .glass-panel
+  glassPanel: {
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    paddingTop: Platform.OS === 'ios' ? 60 : 30,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    zIndex: 50,
+  },
+
+  // Segmented Control (.toggle-container & .toggle-switch)
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 4,
+  },
+  toggleLabel: {
+    fontWeight: '700',
+    fontSize: 15,
+    color: COLORS.textSecondary,
+  },
+  toggleSwitch: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.background,
+    borderRadius: 10,
+    padding: 3,
+    width: 180,
+  },
+  toggleOption: {
+    flex: 1,
+    paddingVertical: 6,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  toggleOptionActive: {
+    backgroundColor: COLORS.surface,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  toggleText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+  },
+  toggleTextActive: {
+    color: COLORS.textPrimary,
+  },
+
+  // .store-pill
+  pillScroll: {
+    gap: 8,
+    paddingRight: 16,
+  },
+  storePill: {
+    backgroundColor: COLORS.background,
+    borderColor: COLORS.border,
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 24,
+  },
+  storePillActive: {
+    backgroundColor: '#0f172a',
+    borderColor: '#0f172a',
+  },
+  storePillText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+  },
+  storePillTextActive: {
+    color: '#ffffff',
+  },
+
+  scrollArea: {
+    flex: 1,
+    padding: 16,
+  },
+
+  // .list-menu-group logic
+  listContainer: {
+    backgroundColor: COLORS.surface,
+    borderColor: COLORS.border,
+    borderWidth: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  dynamicItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: 'transparent',
+  },
+  itemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    flex: 1,
+  },
+  itemIconBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemName: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  itemLockedText: {
+    fontSize: 12,
+    color: '#ef4444',
+    fontWeight: '600',
+    marginTop: 4,
+  },
+  itemRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 12,
+  },
+  itemPriceText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  itemPriceCurrency: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+  },
+  freeBadge: {
+    backgroundColor: '#ecfdf5',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+  },
+  freeBadgeText: {
+    color: '#10b981',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  actionCircleIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: COLORS.surface,
+    borderColor: COLORS.border,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    elevation: 1,
+  },
+
+  // Modal / Bottom Sheet (.modal-overlay & .modal-content)
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  bottomSheet: {
+    backgroundColor: COLORS.surface,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+  },
+  sheetHandle: {
+    width: 36,
+    height: 5,
+    backgroundColor: COLORS.border,
+    borderRadius: 4,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  qtyHeader: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: COLORS.accent,
+    marginBottom: 12,
+  },
+  qtyCalc: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+    marginBottom: 20,
+  },
+  displayWrapper: {
+    backgroundColor: COLORS.surface,
+    borderColor: COLORS.border,
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'flex-end',
+  },
+  currency: {
+    fontSize: 20,
+    color: COLORS.textSecondary,
+    marginRight: 12,
+    fontWeight: '600',
+  },
+  display: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: COLORS.textPrimary,
+  },
+  keypad: {
+    marginBottom: 24,
+  },
+  keypadRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 12,
+  },
+  keypadBtn: {
+    flex: 1,
+    height: 56,
+    backgroundColor: COLORS.background,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  keypadText: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  saveBtn: {
+    flex: 1,
+    backgroundColor: COLORS.accent,
+    paddingVertical: 18,
+    borderRadius: 14,
+    alignItems: 'center',
+  },
+  saveBtnText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  }
 });

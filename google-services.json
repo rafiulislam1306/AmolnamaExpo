@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "283254200113-pv6ofd58pkt0c1lrpmkc5ld7pqendr8v.apps.googleusercontent.com",
+          "client_id": "283254200113-leid33j9ehft8p34809onf6ma96paeen.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.amolnama.pos",
-            "certificate_hash": "cf437b82457feb677d6be5f7a3a8093f1cfed734"
-          }
-        },
-        {
-          "client_id": "283254200113-uvi15om18lgs8aa9np1ldfser7lpbtdq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.amolnama.pos",
-            "certificate_hash": "5aaf6183fdf4464ebbb15c93e5016a0bb717338b"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

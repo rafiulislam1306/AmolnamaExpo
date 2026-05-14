@@ -1,12 +1,12 @@
-import { auth } from '../config/firebase';
-import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithCredential, User } from "firebase/auth";
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
+import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential, signOut, User } from "firebase/auth";
+import { auth } from '../config/firebase';
 import { AppState } from '../core/state';
 
 // Initialize the Google SDK
 GoogleSignin.configure({
   // Use the WEB client ID from your screenshot
-  webClientId: '283254200113-d2k3jbln87k4v5r1g2p3o4n5m6l7.apps.googleusercontent.com', 
+  webClientId: '283254200113-d2k3kg4ec60269gfiuk4ehtlp074s7e1.apps.googleusercontent.com', 
   offlineAccess: true,
 });
 

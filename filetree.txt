@@ -2,6 +2,1009 @@ AmolnamaExpo/
 ├── .vscode
 │   ├── extensions.json
 │   └── settings.json
+├── android
+│   ├── .gradle
+│   │   ├── 8.14.3
+│   │   │   ├── checksums
+│   │   │   │   ├── checksums.lock
+│   │   │   │   ├── md5-checksums.bin
+│   │   │   │   └── sha1-checksums.bin
+│   │   │   ├── executionHistory
+│   │   │   │   ├── executionHistory.bin
+│   │   │   │   └── executionHistory.lock
+│   │   │   ├── expanded
+│   │   │   ├── fileChanges
+│   │   │   │   └── last-build.bin
+│   │   │   ├── fileHashes
+│   │   │   │   ├── fileHashes.bin
+│   │   │   │   ├── fileHashes.lock
+│   │   │   │   └── resourceHashesCache.bin
+│   │   │   ├── vcsMetadata
+│   │   │   └── gc.properties
+│   │   ├── buildOutputCleanup
+│   │   │   ├── buildOutputCleanup.lock
+│   │   │   ├── cache.properties
+│   │   │   └── outputFiles.bin
+│   │   ├── noVersion
+│   │   │   └── buildLogic.lock
+│   │   ├── vcs-1
+│   │   │   └── gc.properties
+│   │   └── file-system.probe
+│   ├── app
+│   │   ├── .cxx
+│   │   │   ├── Debug
+│   │   │   │   └── 74v6m2s4
+│   │   │   │       ├── arm64-v8a
+│   │   │   │       │   ├── .cmake
+│   │   │   │       │   │   └── api
+│   │   │   │       │   │       └── v1
+│   │   │   │       │   │           ├── query
+│   │   │   │       │   │           │   └── client-agp
+│   │   │   │       │   │           │       ├── cache-v2
+│   │   │   │       │   │           │       ├── cmakeFiles-v1
+│   │   │   │       │   │           │       └── codemodel-v2
+│   │   │   │       │   │           └── reply
+│   │   │   │       │   │               ├── cache-v2-13fb62b38636eadff4d6.json
+│   │   │   │       │   │               ├── cmakeFiles-v1-8cc9846f998a4f0efae9.json
+│   │   │   │       │   │               ├── codemodel-v2-6d5148a15ecd609b02f1.json
+│   │   │   │       │   │               ├── directory-.-Debug-d0094a50bb2071803777.json
+│   │   │   │       │   │               ├── directory-rnasyncstorage_autolinked_build-Debug-5776b1d841df6cbc3d77.json
+│   │   │   │       │   │               ├── directory-rngesturehandler_codegen_autolinked_build-Debug-50a6254cf551b5e13a07.json
+│   │   │   │       │   │               ├── directory-RNGoogleSignInCGen_autolinked_build-Debug-c20618920c194b99d8c3.json
+│   │   │   │       │   │               ├── directory-rnreanimated_autolinked_build-Debug-5658086d2a8fc4db84be.json
+│   │   │   │       │   │               ├── directory-rnscreens_autolinked_build-Debug-23d6202ba4d9d1e3306d.json
+│   │   │   │       │   │               ├── directory-rnworklets_autolinked_build-Debug-f4d83278a8b8cd06fecc.json
+│   │   │   │       │   │               ├── directory-safeareacontext_autolinked_build-Debug-2e40135f851cd4e892f5.json
+│   │   │   │       │   │               ├── index-2026-05-13T19-46-35-0922.json
+│   │   │   │       │   │               ├── target-appmodules-Debug-a795e88e1f18367872e3.json
+│   │   │   │       │   │               ├── target-react_codegen_rnasyncstorage-Debug-a67d62bfa0cea0586a03.json
+│   │   │   │       │   │               ├── target-react_codegen_rngesturehandler_codegen-Debug-b8832ef32c15deb2a239.json
+│   │   │   │       │   │               ├── target-react_codegen_RNGoogleSignInCGen-Debug-185b2b575dd9ebbcc5f7.json
+│   │   │   │       │   │               ├── target-react_codegen_rnreanimated-Debug-9deb6d92a66500188f68.json
+│   │   │   │       │   │               ├── target-react_codegen_rnscreens-Debug-bf0c03ec0f3a324d121f.json
+│   │   │   │       │   │               ├── target-react_codegen_rnworklets-Debug-12567e9dd765ddd5b5d4.json
+│   │   │   │       │   │               └── target-react_codegen_safeareacontext-Debug-89ac1953a4465c26a051.json
+│   │   │   │       │   ├── CMakeFiles
+│   │   │   │       │   │   ├── _CMakeLTOTest-CXX
+│   │   │   │       │   │   │   ├── bin
+│   │   │   │       │   │   │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   │   │   ├── boo.dir
+│   │   │   │       │   │   │   │   │   │   └── main.cpp.o
+│   │   │   │       │   │   │   │   │   ├── foo.dir
+│   │   │   │       │   │   │   │   │   │   └── foo.cpp.o
+│   │   │   │       │   │   │   │   │   ├── cmake.check_cache
+│   │   │   │       │   │   │   │   │   ├── rules.ninja
+│   │   │   │       │   │   │   │   │   └── TargetDirectories.txt
+│   │   │   │       │   │   │   │   ├── .ninja_deps
+│   │   │   │       │   │   │   │   ├── .ninja_log
+│   │   │   │       │   │   │   │   ├── build.ninja
+│   │   │   │       │   │   │   │   ├── cmake_install.cmake
+│   │   │   │       │   │   │   │   ├── CMakeCache.txt
+│   │   │   │       │   │   │   │   └── libfoo.a
+│   │   │   │       │   │   │   └── src
+│   │   │   │       │   │   │       ├── CMakeLists.txt
+│   │   │   │       │   │   │       ├── foo.cpp
+│   │   │   │       │   │   │       └── main.cpp
+│   │   │   │       │   │   ├── 3.22.1-g37088a8-dirty
+│   │   │   │       │   │   │   ├── CompilerIdC
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCCompilerId.c
+│   │   │   │       │   │   │   │   └── CMakeCCompilerId.o
+│   │   │   │       │   │   │   ├── CompilerIdCXX
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCXXCompilerId.cpp
+│   │   │   │       │   │   │   │   └── CMakeCXXCompilerId.o
+│   │   │   │       │   │   │   ├── CMakeCCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeCXXCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_C.bin
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_CXX.bin
+│   │   │   │       │   │   │   └── CMakeSystem.cmake
+│   │   │   │       │   │   ├── appmodules.dir
+│   │   │   │       │   │   │   ├── E_
+│   │   │   │       │   │   │   │   └── GitHub
+│   │   │   │       │   │   │   │       └── AmolnamaExpo
+│   │   │   │       │   │   │   │           └── android
+│   │   │   │       │   │   │   │               └── app
+│   │   │   │       │   │   │   └── OnLoad.cpp.o
+│   │   │   │       │   │   ├── CMakeTmp
+│   │   │   │       │   │   ├── cmake.check_cache
+│   │   │   │       │   │   ├── cmake.verify_globs
+│   │   │   │       │   │   ├── CMakeError.log
+│   │   │   │       │   │   ├── CMakeOutput.log
+│   │   │   │       │   │   ├── rules.ninja
+│   │   │   │       │   │   ├── TargetDirectories.txt
+│   │   │   │       │   │   └── VerifyGlobs.cmake
+│   │   │   │       │   ├── rnasyncstorage_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnasyncstorage.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnasyncstorage
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnasyncstorageJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnasyncstorage-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rngesturehandler_codegen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rngesturehandler_codegen.dir
+│   │   │   │       │   │   │       ├── bac033cd950586cef66695376748dd33
+│   │   │   │       │   │   │       │   └── rngesturehandler_codegenJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rngesturehandler_codegen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rngesturehandler_codegen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── RNGoogleSignInCGen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_RNGoogleSignInCGen.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── RNGoogleSignInCGen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── RNGoogleSignInCGenJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── RNGoogleSignInCGen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnreanimated_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnreanimated.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnreanimated
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnreanimatedJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnreanimated-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnscreens_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnscreens.dir
+│   │   │   │       │   │   │       ├── 2fd6a1bbedc6b371ad4e4db89527af50
+│   │   │   │       │   │   │       │   └── cpp
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── rnscreens
+│   │   │   │       │   │   │       │                       ├── RNSScreenStackHeaderConfigShadowNode.cpp.o
+│   │   │   │       │   │   │       │                       ├── RNSScreenStackHeaderSubviewShadowNode.cpp.o
+│   │   │   │       │   │   │       │                       └── RNSScreenStackHeaderSubviewState.cpp.o
+│   │   │   │       │   │   │       ├── 413901abb38f6314cbde83ebd1495d3f
+│   │   │   │       │   │   │       │   └── source
+│   │   │   │       │   │   │       │       └── codegen
+│   │   │   │       │   │   │       │           └── jni
+│   │   │   │       │   │   │       │               └── react
+│   │   │   │       │   │   │       │                   └── renderer
+│   │   │   │       │   │   │       │                       └── components
+│   │   │   │       │   │   │       │                           └── rnscreens
+│   │   │   │       │   │   │       │                               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │                               └── rnscreensJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── 47519976ccf7768f46190625a9d6d1a1
+│   │   │   │       │   │   │       │   └── common
+│   │   │   │       │   │   │       │       └── cpp
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── rnscreens
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSFullWindowOverlayShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSModalScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenStackHeaderConfigState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenState.cpp.o
+│   │   │   │       │   │   │       │                           └── RNSSplitViewScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 61bf7c1d978b37c7d44f7ee2320bf3fd
+│   │   │   │       │   │   │       │   └── generated
+│   │   │   │       │   │   │       │       └── source
+│   │   │   │       │   │   │       │           └── codegen
+│   │   │   │       │   │   │       │               └── jni
+│   │   │   │       │   │   │       │                   └── react
+│   │   │   │       │   │   │       │                       └── renderer
+│   │   │   │       │   │   │       │                           └── components
+│   │   │   │       │   │   │       │                               └── rnscreens
+│   │   │   │       │   │   │       │                                   ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │                                   └── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       ├── a146eadecd5f17f59247266d8a8c2066
+│   │   │   │       │   │   │       └── rnscreens.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnworklets_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnworklets.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnworklets
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnworkletsJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnworklets-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── safeareacontext_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_safeareacontext.dir
+│   │   │   │       │   │   │       ├── 225fdfb8b1c9798de3f3708eea9ceed5
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── safeareacontext
+│   │   │   │       │   │   │       │               └── RNCSafeAreaViewShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 2ab324505768cce0ec68666d977b1552
+│   │   │   │       │   │   │       │   └── jni
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── safeareacontext
+│   │   │   │       │   │   │       │                       ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │                       └── EventEmitters.cpp.o
+│   │   │   │       │   │   │       ├── c187d7ca3158613306578c53e38794f8
+│   │   │   │       │   │   │       │   └── source
+│   │   │   │       │   │   │       │       └── codegen
+│   │   │   │       │   │   │       │           └── jni
+│   │   │   │       │   │   │       │               └── react
+│   │   │   │       │   │   │       │                   └── renderer
+│   │   │   │       │   │   │       │                       └── components
+│   │   │   │       │   │   │       │                           └── safeareacontext
+│   │   │   │       │   │   │       │                               └── Props.cpp.o
+│   │   │   │       │   │   │       ├── c3c65b10a4d1171968e1d08d6aab350e
+│   │   │   │       │   │   │       ├── d1e369fd4a1fab6aaaf87fffccc6e477
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── safeareacontext
+│   │   │   │       │   │   │       │               └── safeareacontextJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── e7c9ee607dd771542165a00afc8821cd
+│   │   │   │       │   │   │       │   └── codegen
+│   │   │   │       │   │   │       │       └── jni
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── safeareacontext
+│   │   │   │       │   │   │       │                           ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │                           └── States.cpp.o
+│   │   │   │       │   │   │       └── e85cda67b61aa2c2e288b4c65806e960
+│   │   │   │       │   │   │           └── cpp
+│   │   │   │       │   │   │               └── react
+│   │   │   │       │   │   │                   └── renderer
+│   │   │   │       │   │   │                       └── components
+│   │   │   │       │   │   │                           └── safeareacontext
+│   │   │   │       │   │   │                               └── RNCSafeAreaViewState.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── .ninja_deps
+│   │   │   │       │   ├── .ninja_log
+│   │   │   │       │   ├── additional_project_files.txt
+│   │   │   │       │   ├── android_gradle_build_mini.json
+│   │   │   │       │   ├── android_gradle_build.json
+│   │   │   │       │   ├── build_file_index.txt
+│   │   │   │       │   ├── build.ninja
+│   │   │   │       │   ├── cmake_install.cmake
+│   │   │   │       │   ├── CMakeCache.txt
+│   │   │   │       │   ├── compile_commands.json
+│   │   │   │       │   ├── compile_commands.json.bin
+│   │   │   │       │   ├── configure_fingerprint.bin
+│   │   │   │       │   ├── metadata_generation_command.txt
+│   │   │   │       │   ├── prefab_config.json
+│   │   │   │       │   └── symbol_folder_index.txt
+│   │   │   │       ├── armeabi-v7a
+│   │   │   │       │   ├── .cmake
+│   │   │   │       │   │   └── api
+│   │   │   │       │   │       └── v1
+│   │   │   │       │   │           ├── query
+│   │   │   │       │   │           │   └── client-agp
+│   │   │   │       │   │           │       ├── cache-v2
+│   │   │   │       │   │           │       ├── cmakeFiles-v1
+│   │   │   │       │   │           │       └── codemodel-v2
+│   │   │   │       │   │           └── reply
+│   │   │   │       │   │               ├── cache-v2-749862df291f751ee3b6.json
+│   │   │   │       │   │               ├── cmakeFiles-v1-550ba352bbe9c9cd3a79.json
+│   │   │   │       │   │               ├── codemodel-v2-96e8e290980ca0666427.json
+│   │   │   │       │   │               ├── directory-.-Debug-d0094a50bb2071803777.json
+│   │   │   │       │   │               ├── directory-rnasyncstorage_autolinked_build-Debug-5776b1d841df6cbc3d77.json
+│   │   │   │       │   │               ├── directory-rngesturehandler_codegen_autolinked_build-Debug-50a6254cf551b5e13a07.json
+│   │   │   │       │   │               ├── directory-RNGoogleSignInCGen_autolinked_build-Debug-c20618920c194b99d8c3.json
+│   │   │   │       │   │               ├── directory-rnreanimated_autolinked_build-Debug-5658086d2a8fc4db84be.json
+│   │   │   │       │   │               ├── directory-rnscreens_autolinked_build-Debug-23d6202ba4d9d1e3306d.json
+│   │   │   │       │   │               ├── directory-rnworklets_autolinked_build-Debug-f4d83278a8b8cd06fecc.json
+│   │   │   │       │   │               ├── directory-safeareacontext_autolinked_build-Debug-2e40135f851cd4e892f5.json
+│   │   │   │       │   │               ├── index-2026-05-14T01-48-01-0711.json
+│   │   │   │       │   │               ├── target-appmodules-Debug-13cedde8218ff9db26b6.json
+│   │   │   │       │   │               ├── target-react_codegen_rnasyncstorage-Debug-53a325e064cd06b97d7d.json
+│   │   │   │       │   │               ├── target-react_codegen_rngesturehandler_codegen-Debug-fcb3a021d5b9b9a5c77a.json
+│   │   │   │       │   │               ├── target-react_codegen_RNGoogleSignInCGen-Debug-803cfb28b51043dfc0bf.json
+│   │   │   │       │   │               ├── target-react_codegen_rnreanimated-Debug-4ad217b4aa3415404f6b.json
+│   │   │   │       │   │               ├── target-react_codegen_rnscreens-Debug-11faaf2f606d7f742af1.json
+│   │   │   │       │   │               ├── target-react_codegen_rnworklets-Debug-06e6133fe2b0875fbdad.json
+│   │   │   │       │   │               └── target-react_codegen_safeareacontext-Debug-e3815f68263171628221.json
+│   │   │   │       │   ├── CMakeFiles
+│   │   │   │       │   │   ├── _CMakeLTOTest-CXX
+│   │   │   │       │   │   │   ├── bin
+│   │   │   │       │   │   │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   │   │   ├── boo.dir
+│   │   │   │       │   │   │   │   │   │   └── main.cpp.o
+│   │   │   │       │   │   │   │   │   ├── foo.dir
+│   │   │   │       │   │   │   │   │   │   └── foo.cpp.o
+│   │   │   │       │   │   │   │   │   ├── cmake.check_cache
+│   │   │   │       │   │   │   │   │   ├── rules.ninja
+│   │   │   │       │   │   │   │   │   └── TargetDirectories.txt
+│   │   │   │       │   │   │   │   ├── .ninja_deps
+│   │   │   │       │   │   │   │   ├── .ninja_log
+│   │   │   │       │   │   │   │   ├── build.ninja
+│   │   │   │       │   │   │   │   ├── cmake_install.cmake
+│   │   │   │       │   │   │   │   ├── CMakeCache.txt
+│   │   │   │       │   │   │   │   └── libfoo.a
+│   │   │   │       │   │   │   └── src
+│   │   │   │       │   │   │       ├── CMakeLists.txt
+│   │   │   │       │   │   │       ├── foo.cpp
+│   │   │   │       │   │   │       └── main.cpp
+│   │   │   │       │   │   ├── 3.22.1-g37088a8-dirty
+│   │   │   │       │   │   │   ├── CompilerIdC
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCCompilerId.c
+│   │   │   │       │   │   │   │   └── CMakeCCompilerId.o
+│   │   │   │       │   │   │   ├── CompilerIdCXX
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCXXCompilerId.cpp
+│   │   │   │       │   │   │   │   └── CMakeCXXCompilerId.o
+│   │   │   │       │   │   │   ├── CMakeCCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeCXXCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_C.bin
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_CXX.bin
+│   │   │   │       │   │   │   └── CMakeSystem.cmake
+│   │   │   │       │   │   ├── appmodules.dir
+│   │   │   │       │   │   │   ├── E_
+│   │   │   │       │   │   │   │   └── GitHub
+│   │   │   │       │   │   │   │       └── AmolnamaExpo
+│   │   │   │       │   │   │   │           └── android
+│   │   │   │       │   │   │   │               └── app
+│   │   │   │       │   │   │   └── OnLoad.cpp.o
+│   │   │   │       │   │   ├── CMakeTmp
+│   │   │   │       │   │   ├── cmake.check_cache
+│   │   │   │       │   │   ├── cmake.verify_globs
+│   │   │   │       │   │   ├── CMakeError.log
+│   │   │   │       │   │   ├── CMakeOutput.log
+│   │   │   │       │   │   ├── rules.ninja
+│   │   │   │       │   │   ├── TargetDirectories.txt
+│   │   │   │       │   │   └── VerifyGlobs.cmake
+│   │   │   │       │   ├── rnasyncstorage_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnasyncstorage.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnasyncstorage
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnasyncstorageJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnasyncstorage-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rngesturehandler_codegen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rngesturehandler_codegen.dir
+│   │   │   │       │   │   │       ├── bac033cd950586cef66695376748dd33
+│   │   │   │       │   │   │       │   └── rngesturehandler_codegenJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rngesturehandler_codegen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rngesturehandler_codegen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── RNGoogleSignInCGen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_RNGoogleSignInCGen.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── RNGoogleSignInCGen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── RNGoogleSignInCGenJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── RNGoogleSignInCGen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnreanimated_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnreanimated.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnreanimated
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnreanimatedJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnreanimated-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnscreens_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnscreens.dir
+│   │   │   │       │   │   │       ├── 2fd6a1bbedc6b371ad4e4db89527af50
+│   │   │   │       │   │   │       │   └── cpp
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── rnscreens
+│   │   │   │       │   │   │       │                       ├── RNSFullWindowOverlayShadowNode.cpp.o
+│   │   │   │       │   │   │       │                       ├── RNSScreenStackHeaderConfigShadowNode.cpp.o
+│   │   │   │       │   │   │       │                       ├── RNSScreenStackHeaderConfigState.cpp.o
+│   │   │   │       │   │   │       │                       └── RNSScreenStackHeaderSubviewState.cpp.o
+│   │   │   │       │   │   │       ├── 31f5b18dd043b05cd0ba2aeed5c92ca1
+│   │   │   │       │   │   │       │   └── codegen
+│   │   │   │       │   │   │       │       └── jni
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── rnscreens
+│   │   │   │       │   │   │       │                           └── rnscreensJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── 413901abb38f6314cbde83ebd1495d3f
+│   │   │   │       │   │   │       │   └── source
+│   │   │   │       │   │   │       │       └── codegen
+│   │   │   │       │   │   │       │           └── jni
+│   │   │   │       │   │   │       │               └── react
+│   │   │   │       │   │   │       │                   └── renderer
+│   │   │   │       │   │   │       │                       └── components
+│   │   │   │       │   │   │       │                           └── rnscreens
+│   │   │   │       │   │   │       │                               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │                               └── EventEmitters.cpp.o
+│   │   │   │       │   │   │       ├── 47519976ccf7768f46190625a9d6d1a1
+│   │   │   │       │   │   │       │   └── common
+│   │   │   │       │   │   │       │       └── cpp
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── rnscreens
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSModalScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenState.cpp.o
+│   │   │   │       │   │   │       │                           └── RNSSplitViewScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 61bf7c1d978b37c7d44f7ee2320bf3fd
+│   │   │   │       │   │   │       │   └── generated
+│   │   │   │       │   │   │       │       └── source
+│   │   │   │       │   │   │       │           └── codegen
+│   │   │   │       │   │   │       │               └── jni
+│   │   │   │       │   │   │       │                   └── react
+│   │   │   │       │   │   │       │                       └── renderer
+│   │   │   │       │   │   │       │                           └── components
+│   │   │   │       │   │   │       │                               └── rnscreens
+│   │   │   │       │   │   │       │                                   ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │                                   └── States.cpp.o
+│   │   │   │       │   │   │       ├── 8e65ebac5f222b3d0248b45c321381af
+│   │   │   │       │   │   │       │   └── react
+│   │   │   │       │   │   │       │       └── renderer
+│   │   │   │       │   │   │       │           └── components
+│   │   │   │       │   │   │       │               └── rnscreens
+│   │   │   │       │   │   │       │                   └── RNSScreenStackHeaderSubviewShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── a146eadecd5f17f59247266d8a8c2066
+│   │   │   │       │   │   │       └── rnscreens.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnworklets_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnworklets.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnworklets
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnworkletsJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnworklets-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── safeareacontext_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_safeareacontext.dir
+│   │   │   │       │   │   │       ├── 222e7c5fcaec77df761e9656b9e8ce25
+│   │   │   │       │   │   │       │   └── react
+│   │   │   │       │   │   │       │       └── renderer
+│   │   │   │       │   │   │       │           └── components
+│   │   │   │       │   │   │       │               └── safeareacontext
+│   │   │   │       │   │   │       │                   └── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       ├── 225fdfb8b1c9798de3f3708eea9ceed5
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── safeareacontext
+│   │   │   │       │   │   │       │               └── RNCSafeAreaViewShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 2ab324505768cce0ec68666d977b1552
+│   │   │   │       │   │   │       │   └── jni
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── safeareacontext
+│   │   │   │       │   │   │       │                       ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │                       └── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       ├── 700b52866472c9010982cdd4833450e2
+│   │   │   │       │   │   │       │   └── react
+│   │   │   │       │   │   │       │       └── renderer
+│   │   │   │       │   │   │       │           └── components
+│   │   │   │       │   │   │       │               └── safeareacontext
+│   │   │   │       │   │   │       │                   └── RNCSafeAreaViewState.cpp.o
+│   │   │   │       │   │   │       ├── c3c65b10a4d1171968e1d08d6aab350e
+│   │   │   │       │   │   │       ├── d1e369fd4a1fab6aaaf87fffccc6e477
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── safeareacontext
+│   │   │   │       │   │   │       │               └── safeareacontextJSI-generated.cpp.o
+│   │   │   │       │   │   │       └── e7c9ee607dd771542165a00afc8821cd
+│   │   │   │       │   │   │           └── codegen
+│   │   │   │       │   │   │               └── jni
+│   │   │   │       │   │   │                   └── react
+│   │   │   │       │   │   │                       └── renderer
+│   │   │   │       │   │   │                           └── components
+│   │   │   │       │   │   │                               └── safeareacontext
+│   │   │   │       │   │   │                                   ├── Props.cpp.o
+│   │   │   │       │   │   │                                   └── States.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── .ninja_deps
+│   │   │   │       │   ├── .ninja_log
+│   │   │   │       │   ├── additional_project_files.txt
+│   │   │   │       │   ├── android_gradle_build_mini.json
+│   │   │   │       │   ├── android_gradle_build.json
+│   │   │   │       │   ├── build_file_index.txt
+│   │   │   │       │   ├── build.ninja
+│   │   │   │       │   ├── cmake_install.cmake
+│   │   │   │       │   ├── CMakeCache.txt
+│   │   │   │       │   ├── compile_commands.json
+│   │   │   │       │   ├── compile_commands.json.bin
+│   │   │   │       │   ├── configure_fingerprint.bin
+│   │   │   │       │   ├── metadata_generation_command.txt
+│   │   │   │       │   ├── prefab_config.json
+│   │   │   │       │   └── symbol_folder_index.txt
+│   │   │   │       ├── prefab
+│   │   │   │       │   ├── arm64-v8a
+│   │   │   │       │   │   └── prefab
+│   │   │   │       │   │       └── lib
+│   │   │   │       │   │           └── aarch64-linux-android
+│   │   │   │       │   │               └── cmake
+│   │   │   │       │   │                   ├── fbjni
+│   │   │   │       │   │                   │   ├── fbjniConfig.cmake
+│   │   │   │       │   │                   │   └── fbjniConfigVersion.cmake
+│   │   │   │       │   │                   ├── hermes-engine
+│   │   │   │       │   │                   │   ├── hermes-engineConfig.cmake
+│   │   │   │       │   │                   │   └── hermes-engineConfigVersion.cmake
+│   │   │   │       │   │                   ├── react-native-reanimated
+│   │   │   │       │   │                   │   ├── react-native-reanimatedConfig.cmake
+│   │   │   │       │   │                   │   └── react-native-reanimatedConfigVersion.cmake
+│   │   │   │       │   │                   ├── react-native-worklets
+│   │   │   │       │   │                   │   ├── react-native-workletsConfig.cmake
+│   │   │   │       │   │                   │   └── react-native-workletsConfigVersion.cmake
+│   │   │   │       │   │                   └── ReactAndroid
+│   │   │   │       │   │                       ├── ReactAndroidConfig.cmake
+│   │   │   │       │   │                       └── ReactAndroidConfigVersion.cmake
+│   │   │   │       │   ├── armeabi-v7a
+│   │   │   │       │   │   └── prefab
+│   │   │   │       │   │       └── lib
+│   │   │   │       │   │           └── arm-linux-androideabi
+│   │   │   │       │   │               └── cmake
+│   │   │   │       │   │                   ├── fbjni
+│   │   │   │       │   │                   │   ├── fbjniConfig.cmake
+│   │   │   │       │   │                   │   └── fbjniConfigVersion.cmake
+│   │   │   │       │   │                   ├── hermes-engine
+│   │   │   │       │   │                   │   ├── hermes-engineConfig.cmake
+│   │   │   │       │   │                   │   └── hermes-engineConfigVersion.cmake
+│   │   │   │       │   │                   ├── react-native-reanimated
+│   │   │   │       │   │                   │   ├── react-native-reanimatedConfig.cmake
+│   │   │   │       │   │                   │   └── react-native-reanimatedConfigVersion.cmake
+│   │   │   │       │   │                   ├── react-native-worklets
+│   │   │   │       │   │                   │   ├── react-native-workletsConfig.cmake
+│   │   │   │       │   │                   │   └── react-native-workletsConfigVersion.cmake
+│   │   │   │       │   │                   └── ReactAndroid
+│   │   │   │       │   │                       ├── ReactAndroidConfig.cmake
+│   │   │   │       │   │                       └── ReactAndroidConfigVersion.cmake
+│   │   │   │       │   └── x86_64
+│   │   │   │       │       └── prefab
+│   │   │   │       │           └── lib
+│   │   │   │       │               └── x86_64-linux-android
+│   │   │   │       │                   └── cmake
+│   │   │   │       │                       ├── fbjni
+│   │   │   │       │                       │   ├── fbjniConfig.cmake
+│   │   │   │       │                       │   └── fbjniConfigVersion.cmake
+│   │   │   │       │                       ├── hermes-engine
+│   │   │   │       │                       │   ├── hermes-engineConfig.cmake
+│   │   │   │       │                       │   └── hermes-engineConfigVersion.cmake
+│   │   │   │       │                       ├── react-native-reanimated
+│   │   │   │       │                       │   ├── react-native-reanimatedConfig.cmake
+│   │   │   │       │                       │   └── react-native-reanimatedConfigVersion.cmake
+│   │   │   │       │                       ├── react-native-worklets
+│   │   │   │       │                       │   ├── react-native-workletsConfig.cmake
+│   │   │   │       │                       │   └── react-native-workletsConfigVersion.cmake
+│   │   │   │       │                       └── ReactAndroid
+│   │   │   │       │                           ├── ReactAndroidConfig.cmake
+│   │   │   │       │                           └── ReactAndroidConfigVersion.cmake
+│   │   │   │       ├── x86_64
+│   │   │   │       │   ├── .cmake
+│   │   │   │       │   │   └── api
+│   │   │   │       │   │       └── v1
+│   │   │   │       │   │           ├── query
+│   │   │   │       │   │           │   └── client-agp
+│   │   │   │       │   │           │       ├── cache-v2
+│   │   │   │       │   │           │       ├── cmakeFiles-v1
+│   │   │   │       │   │           │       └── codemodel-v2
+│   │   │   │       │   │           └── reply
+│   │   │   │       │   │               ├── cache-v2-fbc6ace84f5a078c0904.json
+│   │   │   │       │   │               ├── cmakeFiles-v1-77123c3679ef43d9c896.json
+│   │   │   │       │   │               ├── codemodel-v2-c8499ddfd72014e826b8.json
+│   │   │   │       │   │               ├── directory-.-Debug-d0094a50bb2071803777.json
+│   │   │   │       │   │               ├── directory-rnasyncstorage_autolinked_build-Debug-5776b1d841df6cbc3d77.json
+│   │   │   │       │   │               ├── directory-rngesturehandler_codegen_autolinked_build-Debug-50a6254cf551b5e13a07.json
+│   │   │   │       │   │               ├── directory-RNGoogleSignInCGen_autolinked_build-Debug-c20618920c194b99d8c3.json
+│   │   │   │       │   │               ├── directory-rnreanimated_autolinked_build-Debug-5658086d2a8fc4db84be.json
+│   │   │   │       │   │               ├── directory-rnscreens_autolinked_build-Debug-23d6202ba4d9d1e3306d.json
+│   │   │   │       │   │               ├── directory-rnworklets_autolinked_build-Debug-f4d83278a8b8cd06fecc.json
+│   │   │   │       │   │               ├── directory-safeareacontext_autolinked_build-Debug-2e40135f851cd4e892f5.json
+│   │   │   │       │   │               ├── index-2026-05-13T19-48-01-0484.json
+│   │   │   │       │   │               ├── target-appmodules-Debug-d20e1460f4f35f522d83.json
+│   │   │   │       │   │               ├── target-react_codegen_rnasyncstorage-Debug-a67d62bfa0cea0586a03.json
+│   │   │   │       │   │               ├── target-react_codegen_rngesturehandler_codegen-Debug-b8832ef32c15deb2a239.json
+│   │   │   │       │   │               ├── target-react_codegen_RNGoogleSignInCGen-Debug-185b2b575dd9ebbcc5f7.json
+│   │   │   │       │   │               ├── target-react_codegen_rnreanimated-Debug-9deb6d92a66500188f68.json
+│   │   │   │       │   │               ├── target-react_codegen_rnscreens-Debug-f1b9155b31dcd966b23b.json
+│   │   │   │       │   │               ├── target-react_codegen_rnworklets-Debug-12567e9dd765ddd5b5d4.json
+│   │   │   │       │   │               └── target-react_codegen_safeareacontext-Debug-89780e62054529cec9e2.json
+│   │   │   │       │   ├── CMakeFiles
+│   │   │   │       │   │   ├── _CMakeLTOTest-CXX
+│   │   │   │       │   │   │   ├── bin
+│   │   │   │       │   │   │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   │   │   ├── boo.dir
+│   │   │   │       │   │   │   │   │   │   └── main.cpp.o
+│   │   │   │       │   │   │   │   │   ├── foo.dir
+│   │   │   │       │   │   │   │   │   │   └── foo.cpp.o
+│   │   │   │       │   │   │   │   │   ├── cmake.check_cache
+│   │   │   │       │   │   │   │   │   ├── rules.ninja
+│   │   │   │       │   │   │   │   │   └── TargetDirectories.txt
+│   │   │   │       │   │   │   │   ├── .ninja_deps
+│   │   │   │       │   │   │   │   ├── .ninja_log
+│   │   │   │       │   │   │   │   ├── build.ninja
+│   │   │   │       │   │   │   │   ├── cmake_install.cmake
+│   │   │   │       │   │   │   │   ├── CMakeCache.txt
+│   │   │   │       │   │   │   │   └── libfoo.a
+│   │   │   │       │   │   │   └── src
+│   │   │   │       │   │   │       ├── CMakeLists.txt
+│   │   │   │       │   │   │       ├── foo.cpp
+│   │   │   │       │   │   │       └── main.cpp
+│   │   │   │       │   │   ├── 3.22.1-g37088a8-dirty
+│   │   │   │       │   │   │   ├── CompilerIdC
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCCompilerId.c
+│   │   │   │       │   │   │   │   └── CMakeCCompilerId.o
+│   │   │   │       │   │   │   ├── CompilerIdCXX
+│   │   │   │       │   │   │   │   ├── tmp
+│   │   │   │       │   │   │   │   ├── CMakeCXXCompilerId.cpp
+│   │   │   │       │   │   │   │   └── CMakeCXXCompilerId.o
+│   │   │   │       │   │   │   ├── CMakeCCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeCXXCompiler.cmake
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_C.bin
+│   │   │   │       │   │   │   ├── CMakeDetermineCompilerABI_CXX.bin
+│   │   │   │       │   │   │   └── CMakeSystem.cmake
+│   │   │   │       │   │   ├── appmodules.dir
+│   │   │   │       │   │   │   ├── E_
+│   │   │   │       │   │   │   │   └── GitHub
+│   │   │   │       │   │   │   │       └── AmolnamaExpo
+│   │   │   │       │   │   │   │           └── android
+│   │   │   │       │   │   │   │               └── app
+│   │   │   │       │   │   │   └── OnLoad.cpp.o
+│   │   │   │       │   │   ├── CMakeTmp
+│   │   │   │       │   │   ├── cmake.check_cache
+│   │   │   │       │   │   ├── cmake.verify_globs
+│   │   │   │       │   │   ├── CMakeError.log
+│   │   │   │       │   │   ├── CMakeOutput.log
+│   │   │   │       │   │   ├── rules.ninja
+│   │   │   │       │   │   ├── TargetDirectories.txt
+│   │   │   │       │   │   └── VerifyGlobs.cmake
+│   │   │   │       │   ├── rnasyncstorage_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnasyncstorage.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnasyncstorage
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnasyncstorageJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnasyncstorage-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rngesturehandler_codegen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rngesturehandler_codegen.dir
+│   │   │   │       │   │   │       ├── bac033cd950586cef66695376748dd33
+│   │   │   │       │   │   │       │   └── rngesturehandler_codegenJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rngesturehandler_codegen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rngesturehandler_codegen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── RNGoogleSignInCGen_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_RNGoogleSignInCGen.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── RNGoogleSignInCGen
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── RNGoogleSignInCGenJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── RNGoogleSignInCGen-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnreanimated_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnreanimated.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnreanimated
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnreanimatedJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnreanimated-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnscreens_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnscreens.dir
+│   │   │   │       │   │   │       ├── 2fd6a1bbedc6b371ad4e4db89527af50
+│   │   │   │       │   │   │       │   └── cpp
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── rnscreens
+│   │   │   │       │   │   │       │                       ├── RNSScreenStackHeaderConfigShadowNode.cpp.o
+│   │   │   │       │   │   │       │                       └── RNSScreenStackHeaderSubviewShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 413901abb38f6314cbde83ebd1495d3f
+│   │   │   │       │   │   │       │   └── source
+│   │   │   │       │   │   │       │       └── codegen
+│   │   │   │       │   │   │       │           └── jni
+│   │   │   │       │   │   │       │               └── react
+│   │   │   │       │   │   │       │                   └── renderer
+│   │   │   │       │   │   │       │                       └── components
+│   │   │   │       │   │   │       │                           └── rnscreens
+│   │   │   │       │   │   │       │                               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │                               └── rnscreensJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── 47519976ccf7768f46190625a9d6d1a1
+│   │   │   │       │   │   │       │   └── common
+│   │   │   │       │   │   │       │       └── cpp
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── rnscreens
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSBottomTabsState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSFullWindowOverlayShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSModalScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenStackHeaderConfigState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenStackHeaderSubviewState.cpp.o
+│   │   │   │       │   │   │       │                           ├── RNSScreenState.cpp.o
+│   │   │   │       │   │   │       │                           └── RNSSplitViewScreenShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 61bf7c1d978b37c7d44f7ee2320bf3fd
+│   │   │   │       │   │   │       │   └── generated
+│   │   │   │       │   │   │       │       └── source
+│   │   │   │       │   │   │       │           └── codegen
+│   │   │   │       │   │   │       │               └── jni
+│   │   │   │       │   │   │       │                   └── react
+│   │   │   │       │   │   │       │                       └── renderer
+│   │   │   │       │   │   │       │                           └── components
+│   │   │   │       │   │   │       │                               └── rnscreens
+│   │   │   │       │   │   │       │                                   ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │                                   └── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       ├── a146eadecd5f17f59247266d8a8c2066
+│   │   │   │       │   │   │       └── rnscreens.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── rnworklets_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_rnworklets.dir
+│   │   │   │       │   │   │       ├── react
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── rnworklets
+│   │   │   │       │   │   │       │               ├── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       │               ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │               ├── Props.cpp.o
+│   │   │   │       │   │   │       │               ├── rnworkletsJSI-generated.cpp.o
+│   │   │   │       │   │   │       │               ├── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       │               └── States.cpp.o
+│   │   │   │       │   │   │       └── rnworklets-generated.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── safeareacontext_autolinked_build
+│   │   │   │       │   │   ├── CMakeFiles
+│   │   │   │       │   │   │   └── react_codegen_safeareacontext.dir
+│   │   │   │       │   │   │       ├── 2ab324505768cce0ec68666d977b1552
+│   │   │   │       │   │   │       │   └── jni
+│   │   │   │       │   │   │       │       └── react
+│   │   │   │       │   │   │       │           └── renderer
+│   │   │   │       │   │   │       │               └── components
+│   │   │   │       │   │   │       │                   └── safeareacontext
+│   │   │   │       │   │   │       │                       └── ComponentDescriptors.cpp.o
+│   │   │   │       │   │   │       ├── 700b52866472c9010982cdd4833450e2
+│   │   │   │       │   │   │       │   └── react
+│   │   │   │       │   │   │       │       └── renderer
+│   │   │   │       │   │   │       │           └── components
+│   │   │   │       │   │   │       │               └── safeareacontext
+│   │   │   │       │   │   │       │                   └── RNCSafeAreaViewShadowNode.cpp.o
+│   │   │   │       │   │   │       ├── 79a4fe8cb32b5a2d3abc614c0ca6c850
+│   │   │   │       │   │   │       │   └── android
+│   │   │   │       │   │   │       ├── c187d7ca3158613306578c53e38794f8
+│   │   │   │       │   │   │       │   └── source
+│   │   │   │       │   │   │       │       └── codegen
+│   │   │   │       │   │   │       │           └── jni
+│   │   │   │       │   │   │       │               └── react
+│   │   │   │       │   │   │       │                   └── renderer
+│   │   │   │       │   │   │       │                       └── components
+│   │   │   │       │   │   │       │                           └── safeareacontext
+│   │   │   │       │   │   │       │                               ├── Props.cpp.o
+│   │   │   │       │   │   │       │                               └── States.cpp.o
+│   │   │   │       │   │   │       ├── d1e369fd4a1fab6aaaf87fffccc6e477
+│   │   │   │       │   │   │       │   └── renderer
+│   │   │   │       │   │   │       │       └── components
+│   │   │   │       │   │   │       │           └── safeareacontext
+│   │   │   │       │   │   │       │               └── safeareacontextJSI-generated.cpp.o
+│   │   │   │       │   │   │       ├── e7c9ee607dd771542165a00afc8821cd
+│   │   │   │       │   │   │       │   └── codegen
+│   │   │   │       │   │   │       │       └── jni
+│   │   │   │       │   │   │       │           └── react
+│   │   │   │       │   │   │       │               └── renderer
+│   │   │   │       │   │   │       │                   └── components
+│   │   │   │       │   │   │       │                       └── safeareacontext
+│   │   │   │       │   │   │       │                           ├── EventEmitters.cpp.o
+│   │   │   │       │   │   │       │                           └── ShadowNodes.cpp.o
+│   │   │   │       │   │   │       └── e85cda67b61aa2c2e288b4c65806e960
+│   │   │   │       │   │   │           └── cpp
+│   │   │   │       │   │   │               └── react
+│   │   │   │       │   │   │                   └── renderer
+│   │   │   │       │   │   │                       └── components
+│   │   │   │       │   │   │                           └── safeareacontext
+│   │   │   │       │   │   │                               └── RNCSafeAreaViewState.cpp.o
+│   │   │   │       │   │   └── cmake_install.cmake
+│   │   │   │       │   ├── .ninja_deps
+│   │   │   │       │   ├── .ninja_log
+│   │   │   │       │   ├── additional_project_files.txt
+│   │   │   │       │   ├── android_gradle_build_mini.json
+│   │   │   │       │   ├── android_gradle_build.json
+│   │   │   │       │   ├── build_file_index.txt
+│   │   │   │       │   ├── build.ninja
+│   │   │   │       │   ├── cmake_install.cmake
+│   │   │   │       │   ├── CMakeCache.txt
+│   │   │   │       │   ├── compile_commands.json
+│   │   │   │       │   ├── compile_commands.json.bin
+│   │   │   │       │   ├── configure_fingerprint.bin
+│   │   │   │       │   ├── metadata_generation_command.txt
+│   │   │   │       │   ├── prefab_config.json
+│   │   │   │       │   └── symbol_folder_index.txt
+│   │   │   │       └── hash_key.txt
+│   │   │   └── tools
+│   │   │       └── debug
+│   │   │           ├── arm64-v8a
+│   │   │           │   └── compile_commands.json
+│   │   │           ├── armeabi-v7a
+│   │   │           │   └── compile_commands.json
+│   │   │           └── x86_64
+│   │   │               └── compile_commands.json
+│   │   ├── src
+│   │   │   ├── debug
+│   │   │   │   └── AndroidManifest.xml
+│   │   │   ├── debugOptimized
+│   │   │   │   └── AndroidManifest.xml
+│   │   │   └── main
+│   │   │       ├── java
+│   │   │       │   └── com
+│   │   │       │       └── amolnama
+│   │   │       │           └── pos
+│   │   │       │               ├── MainActivity.kt
+│   │   │       │               └── MainApplication.kt
+│   │   │       ├── res
+│   │   │       │   ├── drawable
+│   │   │       │   │   ├── ic_launcher_background.xml
+│   │   │       │   │   └── rn_edit_text_material.xml
+│   │   │       │   ├── drawable-hdpi
+│   │   │       │   │   └── splashscreen_logo.png
+│   │   │       │   ├── drawable-mdpi
+│   │   │       │   │   └── splashscreen_logo.png
+│   │   │       │   ├── drawable-xhdpi
+│   │   │       │   │   └── splashscreen_logo.png
+│   │   │       │   ├── drawable-xxhdpi
+│   │   │       │   │   └── splashscreen_logo.png
+│   │   │       │   ├── drawable-xxxhdpi
+│   │   │       │   │   └── splashscreen_logo.png
+│   │   │       │   ├── mipmap-anydpi-v26
+│   │   │       │   │   ├── ic_launcher_round.xml
+│   │   │       │   │   └── ic_launcher.xml
+│   │   │       │   ├── mipmap-hdpi
+│   │   │       │   │   ├── ic_launcher_background.webp
+│   │   │       │   │   ├── ic_launcher_foreground.webp
+│   │   │       │   │   ├── ic_launcher_monochrome.webp
+│   │   │       │   │   ├── ic_launcher_round.webp
+│   │   │       │   │   └── ic_launcher.webp
+│   │   │       │   ├── mipmap-mdpi
+│   │   │       │   │   ├── ic_launcher_background.webp
+│   │   │       │   │   ├── ic_launcher_foreground.webp
+│   │   │       │   │   ├── ic_launcher_monochrome.webp
+│   │   │       │   │   ├── ic_launcher_round.webp
+│   │   │       │   │   └── ic_launcher.webp
+│   │   │       │   ├── mipmap-xhdpi
+│   │   │       │   │   ├── ic_launcher_background.webp
+│   │   │       │   │   ├── ic_launcher_foreground.webp
+│   │   │       │   │   ├── ic_launcher_monochrome.webp
+│   │   │       │   │   ├── ic_launcher_round.webp
+│   │   │       │   │   └── ic_launcher.webp
+│   │   │       │   ├── mipmap-xxhdpi
+│   │   │       │   │   ├── ic_launcher_background.webp
+│   │   │       │   │   ├── ic_launcher_foreground.webp
+│   │   │       │   │   ├── ic_launcher_monochrome.webp
+│   │   │       │   │   ├── ic_launcher_round.webp
+│   │   │       │   │   └── ic_launcher.webp
+│   │   │       │   ├── mipmap-xxxhdpi
+│   │   │       │   │   ├── ic_launcher_background.webp
+│   │   │       │   │   ├── ic_launcher_foreground.webp
+│   │   │       │   │   ├── ic_launcher_monochrome.webp
+│   │   │       │   │   ├── ic_launcher_round.webp
+│   │   │       │   │   └── ic_launcher.webp
+│   │   │       │   ├── values
+│   │   │       │   │   ├── colors.xml
+│   │   │       │   │   ├── strings.xml
+│   │   │       │   │   └── styles.xml
+│   │   │       │   └── values-night
+│   │   │       │       └── colors.xml
+│   │   │       └── AndroidManifest.xml
+│   │   ├── build.gradle
+│   │   ├── debug.keystore
+│   │   ├── google-services.json
+│   │   └── proguard-rules.pro
+│   ├── gradle
+│   │   └── wrapper
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
+│   ├── .gitignore
+│   ├── build.gradle
+│   ├── gradle.properties
+│   ├── gradlew
+│   ├── gradlew.bat
+│   └── settings.gradle
 ├── app
 │   ├── (tabs)
 │   │   ├── _layout.tsx
@@ -51,6 +1054,7 @@ AmolnamaExpo/
 │   │   ├── state.ts
 │   │   └── StateContext.tsx
 │   ├── features
+│   │   ├── admin.ts
 │   │   ├── auth.ts
 │   │   ├── desk.ts
 │   │   ├── inventory.ts
@@ -62,6 +1066,7 @@ AmolnamaExpo/
 ├── eas.json
 ├── eslint.config.js
 ├── expo-env.d.ts
+├── filetree.txt
 ├── google-services.json
 ├── package-lock.json
 ├── package.json
